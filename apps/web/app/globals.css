@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * The ONLY file in apps/web permitted to declare color literals.
+ * Monochrome design system — mirrors packages/shared design tokens.
+ * check:colors enforces that no other file introduces non-grayscale hex.
+ */
+:root {
+  --color-white: #ffffff;
+  --color-ink: #0a0a0a;
+  --color-black: #000000;
+  --color-gray-50: #fafafa;
+  --color-gray-100: #f0f0f0;
+  --color-gray-300: #d4d4d4;
+  --color-gray-500: #737373;
+
+  --border-hairline: 1px;
+}
+
+html {
+  font-size: 14px; /* base */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-white);
+  color: var(--color-ink);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .headline {
+    font-family: var(--font-headline), ui-sans-serif, system-ui, sans-serif;
+    font-weight: 300; /* Light for ALL headings/display */
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-white);
+  }
+
+  /* Hairline rules used throughout the editorial layout. */
+  hr {
+    border: 0;
+    border-top: var(--border-hairline) solid var(--color-gray-300);
+  }
+
+  a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Ghost button — 1px ink border, transparent fill. */
+  .btn {
+    @apply inline-flex items-center justify-center border border-ink bg-transparent px-5 py-2.5 text-sm tracking-wide transition-colors duration-200;
+    border-radius: 4px;
+  }
+  .btn:hover {
+    background-color: var(--color-gray-100);
+  }
+
+  /* Primary button — solid ink, inverted text. */
+  .btn-primary {
+    @apply inline-flex items-center justify-center border border-ink px-5 py-2.5 text-sm tracking-wide transition-opacity duration-200;
+    background-color: var(--color-ink);
+    color: var(--color-white);
+    border-radius: 4px;
+  }
+  .btn-primary:hover {
+    opacity: 0.86;
+  }
+
+  .input {
+    @apply w-full border border-gray-300 bg-white px-4 py-3 text-base outline-none transition-colors;
+    border-radius: 4px;
+  }
+  .input:focus {
+    border-color: var(--color-ink);
+  }
+
+  .hairline {
+    border-top: var(--border-hairline) solid var(--color-gray-300);
+  }
+
+  /* Grayscale any imagery to keep the palette monochrome. */
+  .grayscale-img {
+    filter: grayscale(1) contrast(1.02);
+  }
+
+  .container-editorial {
+    @apply mx-auto w-full max-w-6xl px-6 md:px-10;
+  }
+
+  .eyebrow {
+    @apply text-xs uppercase tracking-widest text-gray-500;
+  }
+}
+
+/* Restrained motion: subtle fade/slide, disabled for reduced-motion users. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
