@@ -7,10 +7,9 @@ const links = [
   { href: "/book-a-call", label: "Book a call" },
 ];
 
-/** Minimal top nav: wordmark left, links, primary "Start planning" → chat. */
 export function SiteNav() {
   return (
-    <header className="sticky top-0 z-40 border-b border-gray-300 bg-white/90 backdrop-blur">
+    <header className="glass-nav sticky top-0 z-40">
       <nav className="container-editorial flex h-16 items-center justify-between">
         <Wordmark />
         <div className="flex items-center gap-6">
@@ -26,7 +25,7 @@ export function SiteNav() {
               </li>
             ))}
           </ul>
-          <Link href="/chat" className="btn-primary">
+          <Link href="/chat" className="btn-primary text-sm">
             Start planning
           </Link>
         </div>

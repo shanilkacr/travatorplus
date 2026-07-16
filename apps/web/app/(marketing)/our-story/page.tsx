@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Reveal } from "@/components/Reveal";
+import { FadeIn } from "@/components/FadeIn";
+import { GlassPanel } from "@/components/glass/GlassPanel";
+import { GlassSection } from "@/components/glass/GlassSection";
+import { SriLankaImage } from "@/components/SriLankaImage";
+import { PhotoGrid } from "@/components/PhotoGrid";
+import { SRI_LANKA_IMAGES, TEAM_IMAGES } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "Our Story",
@@ -28,86 +33,107 @@ const VALUES = [
 
 const TEAM = ["Founder & guide", "Head of ops", "Lead driver-guide", "Engineering"];
 
+const STORY_GRID = [
+  { ...SRI_LANKA_IMAGES.teaPicker, className: "md:col-span-2" },
+  { ...SRI_LANKA_IMAGES.wildlife, className: "md:col-span-1" },
+];
+
 export default function OurStoryPage() {
   return (
     <>
-      <section className="container-editorial pt-24 pb-16 md:pt-32">
-        <Reveal>
+      <section className="container-editorial pt-24 pb-12 md:pt-32">
+        <FadeIn>
           <p className="eyebrow mb-6">Our Story</p>
           <h1 className="max-w-4xl text-4xl leading-[1.05] tracking-tightest md:text-5xl">
             Destination management for inbound Sri Lanka — planned by AI, run by
             people who live here.
           </h1>
-        </Reveal>
+        </FadeIn>
       </section>
 
       <section className="container-editorial pb-8">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-12">
-          <Reveal className="md:col-span-4">
+        <FadeIn delay={60}>
+          <PhotoGrid cards={STORY_GRID} />
+        </FadeIn>
+        <div className="mt-16 grid grid-cols-1 gap-12 md:grid-cols-12">
+          <FadeIn className="md:col-span-4">
             <p className="eyebrow">Mission</p>
-          </Reveal>
+          </FadeIn>
           <div className="space-y-6 text-base text-gray-500 md:col-span-8 md:text-lg">
-            <p>
-              Travator exists to make a Sri Lanka trip feel effortless to plan and
-              impossible to get wrong. Inbound travelers used to stitch together a
-              dozen browser tabs, a WhatsApp driver, and a hotel booking site that
-              knew nothing about the road between them. We put all of it in one
-              conversation.
-            </p>
-            <p>
-              <span className="text-ink">The founding idea was simple.</span> The
-              hard part of a Sri Lanka trip was never the booking — it was the
-              knowing. Which coast swims in which month. How long the drive from
-              Kandy to Ella really takes. Where to be at dawn. That knowledge lived
-              in the heads of local guides. We taught it to a system that plans out
-              loud, then handed the last mile back to those same guides.
-            </p>
-            <p>
-              This page is placeholder copy for the MVP — the real founding story,
-              team, and photography drop in here.
-            </p>
+            <FadeIn delay={80}>
+              <p>
+                Travator exists to make a Sri Lanka trip feel effortless to plan and
+                impossible to get wrong. Inbound travelers used to stitch together a
+                dozen browser tabs, a WhatsApp driver, and a hotel booking site that
+                knew nothing about the road between them. We put all of it in one
+                conversation.
+              </p>
+            </FadeIn>
+            <FadeIn delay={120}>
+              <p>
+                <span className="text-ink">The founding idea was simple.</span> The
+                hard part of a Sri Lanka trip was never the booking — it was the
+                knowing. Which coast swims in which month. How long the drive from
+                Kandy to Ella really takes. Where to be at dawn. That knowledge lived
+                in the heads of local guides. We taught it to a system that plans out
+                loud, then handed the last mile back to those same guides.
+              </p>
+            </FadeIn>
+            <FadeIn delay={160}>
+              <p>
+                We're building the product in the open — real founding photography
+                and team stories land here as we grow.
+              </p>
+            </FadeIn>
           </div>
         </div>
       </section>
 
-      <section className="hairline mt-16">
-        <div className="container-editorial py-20">
-          <Reveal>
+      <GlassSection muted>
+        <div className="container-editorial">
+          <FadeIn>
             <p className="eyebrow mb-10">What we value</p>
-          </Reveal>
-          <div className="grid grid-cols-1 gap-px border border-gray-300 bg-gray-300 md:grid-cols-2">
+          </FadeIn>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {VALUES.map((v, i) => (
-              <Reveal key={v.title} delay={i * 60} className="bg-white">
-                <div className="h-full p-8">
+              <FadeIn key={v.title} delay={i * 60}>
+                <GlassPanel className="h-full p-8">
                   <h3 className="text-xl">{v.title}</h3>
                   <p className="mt-3 text-sm text-gray-500">{v.body}</p>
-                </div>
-              </Reveal>
+                </GlassPanel>
+              </FadeIn>
             ))}
           </div>
         </div>
-      </section>
+      </GlassSection>
 
-      <section className="hairline">
-        <div className="container-editorial py-20">
-          <Reveal>
+      <GlassSection>
+        <div className="container-editorial">
+          <FadeIn>
             <p className="eyebrow mb-10">The team</p>
-          </Reveal>
-          <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+          </FadeIn>
+          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
             {TEAM.map((role, i) => (
-              <Reveal key={role} delay={i * 60}>
+              <FadeIn key={role} delay={i * 60}>
                 <div>
-                  <div className="aspect-square w-full border border-gray-300 bg-gray-100" />
+                  <div className="relative aspect-square w-full overflow-hidden rounded-4xl shadow-glass">
+                    <SriLankaImage
+                      image={TEAM_IMAGES[i] ?? SRI_LANKA_IMAGES.colombo}
+                      fill
+                      rounded="3xl"
+                      sizes="(max-width:768px) 50vw, 25vw"
+                    />
+                  </div>
                   <p className="mt-3 text-sm text-ink">Name Surname</p>
                   <p className="text-xs uppercase tracking-widest text-gray-500">
                     {role}
                   </p>
                 </div>
-              </Reveal>
+              </FadeIn>
             ))}
           </div>
         </div>
-      </section>
+      </GlassSection>
     </>
   );
 }

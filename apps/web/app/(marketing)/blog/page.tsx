@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { getAllPosts } from "@/lib/blog";
-import { Reveal } from "@/components/Reveal";
+import { FadeIn } from "@/components/FadeIn";
+import { BlogCardList } from "@/components/BlogCardList";
+import { SriLankaImage } from "@/components/SriLankaImage";
+import { getBlogImage } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -20,46 +22,38 @@ function formatDate(d: string) {
 
 export default function BlogIndexPage() {
   const posts = getAllPosts();
+  const items = posts.map((post) => ({
+    title: post.title,
+    description: `${formatDate(post.date)} · ${post.readingTime} — ${post.excerpt}`,
+    link: `/blog/${post.slug}`,
+    image: (
+      <div className="relative h-48 w-full">
+        <SriLankaImage
+          image={getBlogImage(post.slug)}
+          fill
+          rounded="3xl"
+          className="rounded-b-none rounded-t-4xl"
+          sizes="(max-width:768px) 100vw, 50vw"
+        />
+      </div>
+    ),
+  }));
+
   return (
     <>
       <section className="container-editorial pt-24 pb-12 md:pt-32">
-        <Reveal>
+        <FadeIn>
           <p className="eyebrow mb-6">Blog</p>
           <h1 className="max-w-3xl text-4xl leading-[1.05] tracking-tightest md:text-5xl">
             Field notes for planning Sri Lanka.
           </h1>
-        </Reveal>
+        </FadeIn>
       </section>
 
       <section className="container-editorial pb-24">
-        <ul className="border-t border-gray-300">
-          {posts.map((post, i) => (
-            <li key={post.slug} className="border-b border-gray-300">
-              <Reveal delay={i * 40}>
-                <Link
-                  href={`/blog/${post.slug}`}
-                  className="group grid grid-cols-1 gap-4 py-10 md:grid-cols-12"
-                >
-                  <div className="text-xs uppercase tracking-widest text-gray-500 md:col-span-3">
-                    <time dateTime={post.date}>{formatDate(post.date)}</time>
-                    <div className="mt-1">{post.readingTime}</div>
-                  </div>
-                  <div className="md:col-span-9">
-                    <h2 className="text-2xl transition-opacity group-hover:opacity-70">
-                      {post.title}
-                    </h2>
-                    <p className="mt-3 max-w-2xl text-sm text-gray-500">
-                      {post.excerpt}
-                    </p>
-                    <span className="mt-4 inline-block text-sm text-ink underline decoration-gray-300 underline-offset-4 group-hover:decoration-ink">
-                      Read →
-                    </span>
-                  </div>
-                </Link>
-              </Reveal>
-            </li>
-          ))}
-        </ul>
+        <FadeIn delay={80}>
+          <BlogCardList items={items} />
+        </FadeIn>
       </section>
     </>
   );

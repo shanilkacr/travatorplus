@@ -4,8 +4,7 @@
 
 /*
  * The ONLY file in apps/web permitted to declare color literals.
- * Monochrome design system — mirrors packages/shared design tokens.
- * check:colors enforces that no other file introduces non-grayscale hex.
+ * Glass monochrome UI chrome + full-color photography via Unsplash URLs.
  */
 :root {
   --color-white: #ffffff;
@@ -16,11 +15,38 @@
   --color-gray-300: #d4d4d4;
   --color-gray-500: #737373;
 
-  --border-hairline: 1px;
+  --color-white-rgb: 255 255 255;
+  --color-ink-rgb: 10 10 10;
+  --color-gray-50-rgb: 250 250 250;
+  --color-gray-100-rgb: 240 240 240;
+  --color-gray-300-rgb: 212 212 212;
+  --color-gray-500-rgb: 115 115 115;
+
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-strong: rgba(255, 255, 255, 0.72);
+  --glass-blur: 12px;
+  --glass-shadow: 0 8px 32px rgba(10, 10, 10, 0.08);
+
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+  --card: rgba(255, 255, 255, 0.6);
+  --card-foreground: #0a0a0a;
+  --primary: #0a0a0a;
+  --primary-foreground: #ffffff;
+  --secondary: #f0f0f0;
+  --secondary-foreground: #0a0a0a;
+  --muted: #fafafa;
+  --muted-foreground: #737373;
+  --accent: #f0f0f0;
+  --accent-foreground: #0a0a0a;
+  --border: rgba(10, 10, 10, 0.06);
+  --input: rgba(255, 255, 255, 0.5);
+  --ring: rgba(10, 10, 10, 0.12);
+  --radius: 0.875rem;
 }
 
 html {
-  font-size: 14px; /* base */
+  font-size: 14px;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -43,7 +69,7 @@ body {
   h6,
   .headline {
     font-family: var(--font-headline), ui-sans-serif, system-ui, sans-serif;
-    font-weight: 300; /* Light for ALL headings/display */
+    font-weight: 300;
     letter-spacing: -0.01em;
     line-height: 1.05;
   }
@@ -53,10 +79,15 @@ body {
     color: var(--color-white);
   }
 
-  /* Hairline rules used throughout the editorial layout. */
   hr {
     border: 0;
-    border-top: var(--border-hairline) solid var(--color-gray-300);
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-gray-300),
+      transparent
+    );
   }
 
   a {
@@ -65,47 +96,71 @@ body {
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-ink);
-    outline-offset: 2px;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.12);
+  }
+
+  /* Mona Sans ships only 300 + 400 — clamp heavier utility classes. */
+  .font-medium,
+  .font-semibold,
+  .font-bold {
+    font-weight: 400;
   }
 }
 
 @layer components {
-  /* Ghost button — 1px ink border, transparent fill. */
-  .btn {
-    @apply inline-flex items-center justify-center border border-ink bg-transparent px-5 py-2.5 text-sm tracking-wide transition-colors duration-200;
-    border-radius: 4px;
-  }
-  .btn:hover {
-    background-color: var(--color-gray-100);
+  .dot-pattern {
+    pointer-events: none;
+    background-image: radial-gradient(
+      circle,
+      rgb(var(--color-gray-300-rgb) / 0.45) 1px,
+      transparent 1px
+    );
+    background-size: 20px 20px;
   }
 
-  /* Primary button — solid ink, inverted text. */
+  .glass {
+    border-radius: 40px;
+    @apply shadow-glass backdrop-blur-md;
+    background: var(--glass-bg);
+  }
+
+  .glass-panel {
+    border-radius: 24px;
+    @apply shadow-glass-lg backdrop-blur-lg;
+    background: var(--glass-bg-strong);
+  }
+
+  .glass-nav {
+    @apply backdrop-blur-md;
+    background: rgba(255, 255, 255, 0.65);
+    box-shadow: 0 4px 24px rgba(10, 10, 10, 0.04);
+  }
+
+  .surface-muted {
+    border-radius: 40px;
+    @apply bg-gray-50/80 shadow-soft;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-[1rem] bg-gray-100/80 px-6 py-3 text-sm tracking-wide shadow-soft backdrop-blur-sm transition-all duration-200;
+  }
+  .btn:hover {
+    @apply bg-gray-100 shadow-glass;
+  }
+
   .btn-primary {
-    @apply inline-flex items-center justify-center border border-ink px-5 py-2.5 text-sm tracking-wide transition-opacity duration-200;
-    background-color: var(--color-ink);
-    color: var(--color-white);
-    border-radius: 4px;
+    @apply inline-flex items-center justify-center rounded-[1rem] bg-ink px-6 py-3 text-sm tracking-wide text-white shadow-glass transition-opacity duration-200;
   }
   .btn-primary:hover {
-    opacity: 0.86;
+    opacity: 0.88;
   }
 
   .input {
-    @apply w-full border border-gray-300 bg-white px-4 py-3 text-base outline-none transition-colors;
-    border-radius: 4px;
+    @apply w-full rounded-[1rem] bg-white/50 px-5 py-4 text-base shadow-soft backdrop-blur-md transition-shadow;
   }
   .input:focus {
-    border-color: var(--color-ink);
-  }
-
-  .hairline {
-    border-top: var(--border-hairline) solid var(--color-gray-300);
-  }
-
-  /* Grayscale any imagery to keep the palette monochrome. */
-  .grayscale-img {
-    filter: grayscale(1) contrast(1.02);
+    box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.08), 0 4px 16px rgba(10, 10, 10, 0.06);
   }
 
   .container-editorial {
@@ -117,7 +172,6 @@ body {
   }
 }
 
-/* Restrained motion: subtle fade/slide, disabled for reduced-motion users. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

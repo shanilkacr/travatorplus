@@ -27,7 +27,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ),
     blockquote: (props) => (
       <blockquote
-        className="mt-6 border-l-2 border-ink pl-5 text-ink"
+        className="mt-6 rounded-4xl bg-gray-50/80 py-4 pl-5 pr-4 text-ink shadow-soft"
         {...props}
       />
     ),

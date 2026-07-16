@@ -10,11 +10,6 @@ const SUGGESTIONS = [
   "Honeymoon: Galle Fort + south coast, 5 nights",
 ];
 
-/**
- * Lovable-style hero entry point: the prompt IS the product. Submitting routes
- * into /chat with the message pre-sent (via query param; the chat route creates
- * the conversation and sends it).
- */
 export function HeroPrompt() {
   const router = useRouter();
   const [value, setValue] = useState("");
@@ -26,7 +21,7 @@ export function HeroPrompt() {
   }
 
   return (
-    <div className="mx-auto w-full max-w-2xl">
+    <div className="w-full">
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -48,11 +43,15 @@ export function HeroPrompt() {
           aria-label="Describe your trip"
           className="input resize-none text-lg leading-relaxed"
         />
-        <div className="mt-3 flex items-center justify-between">
+        <div className="mt-4 flex items-center justify-between gap-4">
           <span className="text-xs text-gray-500">
             Enter to start · Shift+Enter for a new line
           </span>
-          <button type="submit" className="btn-primary" disabled={!value.trim()}>
+          <button
+            type="submit"
+            disabled={!value.trim()}
+            className="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
+          >
             Plan my trip →
           </button>
         </div>
@@ -64,7 +63,7 @@ export function HeroPrompt() {
             <button
               type="button"
               onClick={() => start(s)}
-              className="rounded border border-gray-300 px-3 py-1.5 text-sm text-gray-500 transition-colors hover:border-ink hover:text-ink"
+              className="rounded-full bg-white/50 px-4 py-2 text-xs text-gray-500 shadow-soft transition-colors hover:bg-white/70 hover:text-ink"
             >
               {s}
             </button>

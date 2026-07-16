@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { fontVariables, fontFamilyStyle } from "./fonts";
+import { fontFamilyStyle, MONA_SANS_URL } from "./fonts";
 
 export const metadata: Metadata = {
   title: {
@@ -17,8 +17,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={fontVariables}>
-      <body style={fontFamilyStyle}>{children}</body>
+    <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link href={MONA_SANS_URL} rel="stylesheet" />
+      </head>
+      <body
+        style={fontFamilyStyle}
+        className="relative min-h-screen bg-page-gradient"
+      >
+        <div aria-hidden className="dot-pattern absolute inset-0 opacity-40" />
+        <div className="relative z-10">{children}</div>
+      </body>
     </html>
   );
 }

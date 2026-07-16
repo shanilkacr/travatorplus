@@ -6,7 +6,6 @@ const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8787";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
-/** Fallback contact form — posts to the api contact_requests endpoint. */
 export function ContactForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [form, setForm] = useState({
@@ -39,7 +38,7 @@ export function ContactForm() {
 
   if (status === "sent") {
     return (
-      <div className="border border-ink p-8">
+      <div className="glass p-8">
         <p className="text-lg">Thanks — we'll be in touch shortly.</p>
         <p className="mt-2 text-sm text-gray-500">
           A member of the team will reach out to {form.email || "you"} to find a
@@ -93,16 +92,16 @@ export function ContactForm() {
           className="input resize-none"
         />
       </label>
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <button
           type="submit"
-          className="btn-primary"
           disabled={status === "sending"}
+          className="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
         >
           {status === "sending" ? "Sending…" : "Request a call"}
         </button>
         {status === "error" && (
-          <span className="text-sm text-gray-500 underline decoration-ink">
+          <span className="text-sm text-gray-500">
             Couldn't send — please email us instead.
           </span>
         )}

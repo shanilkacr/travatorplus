@@ -6,8 +6,9 @@ const nextConfig = {
   transpilePackages: ["@travator/shared"],
   reactStrictMode: true,
   images: {
-    // Marketing imagery is grayscale-filtered; remote placeholders allowed.
-    remotePatterns: [{ protocol: "https", hostname: "**" }],
+    remotePatterns: [
+      { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
+    ],
   },
 };
 

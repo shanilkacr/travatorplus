@@ -20,8 +20,9 @@ const cols = [
 
 export function SiteFooter() {
   return (
-    <footer className="mt-32 border-t border-gray-300">
-      <div className="container-editorial grid grid-cols-1 gap-10 py-16 md:grid-cols-4">
+    <footer className="relative mt-32 bg-gray-50/80">
+      <div aria-hidden className="dot-pattern absolute inset-0 opacity-30" />
+      <div className="container-editorial relative z-10 grid grid-cols-1 gap-10 py-16 md:grid-cols-4">
         <div className="md:col-span-2">
           <Wordmark />
           <p className="mt-4 max-w-xs text-sm text-gray-500">
@@ -47,7 +48,7 @@ export function SiteFooter() {
           </div>
         ))}
       </div>
-      <div className="hairline">
+      <div className="relative z-10 bg-white/40 backdrop-blur-sm">
         <div className="container-editorial flex flex-col items-start justify-between gap-2 py-6 text-xs text-gray-500 md:flex-row md:items-center">
           <span>© {new Date().getFullYear()} Travator. All rights reserved.</span>
           <span className="tracking-widest uppercase">Colombo · Kandy · Ella · Galle</span>

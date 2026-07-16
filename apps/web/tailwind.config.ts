@@ -1,39 +1,62 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Monochrome-only Tailwind theme. Color VALUES live once, as CSS variables, in
+ * Monochrome glass Tailwind theme. Color VALUES live once, as CSS variables, in
  * app/globals.css (the single file check:colors permits to hold hex literals).
- * This config maps semantic names onto those variables — so it contains no hex
- * itself and stays in lockstep with packages/shared/src/design/tokens.ts.
  */
 const config: Config = {
+  darkMode: ["class"],
   content: [
     "./app/**/*.{ts,tsx,mdx}",
     "./components/**/*.{ts,tsx}",
     "./content/**/*.{md,mdx}",
   ],
   theme: {
-    // Replace the default palette entirely so no color survives.
     colors: {
       transparent: "transparent",
       current: "currentColor",
-      white: "var(--color-white)",
+      white: "rgb(var(--color-white-rgb) / <alpha-value>)",
       black: "var(--color-black)",
-      ink: "var(--color-ink)",
+      ink: "rgb(var(--color-ink-rgb) / <alpha-value>)",
       gray: {
-        50: "var(--color-gray-50)",
-        100: "var(--color-gray-100)",
-        300: "var(--color-gray-300)",
-        500: "var(--color-gray-500)",
+        50: "rgb(var(--color-gray-50-rgb) / <alpha-value>)",
+        100: "rgb(var(--color-gray-100-rgb) / <alpha-value>)",
+        300: "rgb(var(--color-gray-300-rgb) / <alpha-value>)",
+        500: "rgb(var(--color-gray-500-rgb) / <alpha-value>)",
       },
+      background: "var(--background)",
+      foreground: "var(--foreground)",
+      primary: {
+        DEFAULT: "var(--primary)",
+        foreground: "var(--primary-foreground)",
+      },
+      secondary: {
+        DEFAULT: "var(--secondary)",
+        foreground: "var(--secondary-foreground)",
+      },
+      muted: {
+        DEFAULT: "var(--muted)",
+        foreground: "var(--muted-foreground)",
+      },
+      accent: {
+        DEFAULT: "var(--accent)",
+        foreground: "var(--accent-foreground)",
+      },
+      card: {
+        DEFAULT: "var(--card)",
+        foreground: "var(--card-foreground)",
+      },
+      border: "var(--border)",
+      input: "var(--input)",
+      ring: "var(--ring)",
     },
     extend: {
       fontFamily: {
         headline: ["var(--font-headline)", "ui-sans-serif", "system-ui", "sans-serif"],
         body: ["var(--font-body)", "ui-sans-serif", "system-ui", "sans-serif"],
+        sans: ["var(--font-body)", "ui-sans-serif", "system-ui", "sans-serif"],
       },
       fontSize: {
-        // Tuned for a 14px base (1rem = 14px).
         xs: ["0.786rem", { lineHeight: "1.4" }],
         sm: ["0.857rem", { lineHeight: "1.5" }],
         base: ["1rem", { lineHeight: "1.6" }],
@@ -53,12 +76,28 @@ const config: Config = {
       },
       borderRadius: {
         none: "0px",
-        sm: "4px",
-        DEFAULT: "4px",
-        md: "6px",
+        sm: "6px",
+        DEFAULT: "10px",
+        md: "10px",
+        lg: "14px",
+        xl: "18px",
+        "2xl": "24px",
+        "3xl": "32px",
+        "4xl": "40px",
+        "5xl": "48px",
+        full: "9999px",
       },
-      borderColor: {
-        DEFAULT: "var(--color-gray-300)",
+      boxShadow: {
+        glass: "0 4px 24px rgba(10, 10, 10, 0.06), 0 1px 3px rgba(10, 10, 10, 0.04)",
+        "glass-lg": "0 8px 40px rgba(10, 10, 10, 0.1), 0 2px 8px rgba(10, 10, 10, 0.05)",
+        "glass-inset": "inset 0 1px 0 rgba(255, 255, 255, 0.6)",
+        soft: "0 2px 12px rgba(10, 10, 10, 0.05)",
+      },
+      backgroundImage: {
+        "frost-gradient":
+          "linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(250,250,250,0.4) 100%)",
+        "page-gradient":
+          "linear-gradient(180deg, var(--color-gray-50) 0%, var(--color-white) 40%, var(--color-gray-50) 100%)",
       },
       transitionTimingFunction: {
         editorial: "cubic-bezier(0.22, 1, 0.36, 1)",

@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPostSlugs, getPostMeta } from "@/lib/blog";
+import { FadeIn } from "@/components/FadeIn";
+import { GlassPanel } from "@/components/glass/GlassPanel";
+import { SriLankaImage } from "@/components/SriLankaImage";
+import { getBlogImage } from "@/lib/images";
 
 export const dynamicParams = false;
 
@@ -38,29 +42,45 @@ export default async function BlogPostPage({
 }) {
   if (!getPostSlugs().includes(params.slug)) notFound();
   const meta = getPostMeta(params.slug);
-  // Statically resolvable dynamic import over content/blog/*.mdx.
   const { default: Post } = await import(`@/content/blog/${params.slug}.mdx`);
 
   return (
-    <article className="container-editorial py-20 md:py-28">
-      <div className="mx-auto max-w-prose">
-        <Link
-          href="/blog"
-          className="text-xs uppercase tracking-widest text-gray-500 transition-colors hover:text-ink"
-        >
-          ← All posts
-        </Link>
-        <div className="mt-8 flex items-center gap-3 text-xs uppercase tracking-widest text-gray-500">
-          <time dateTime={meta.date}>{formatDate(meta.date)}</time>
-          <span aria-hidden>·</span>
-          <span>{meta.readingTime}</span>
-        </div>
-        <h1 className="mt-4 text-4xl leading-[1.08] tracking-tightest md:text-5xl">
-          {meta.title}
-        </h1>
-        <hr className="mt-10" />
-        <div className="mt-2">
-          <Post />
+    <article>
+      <div className="relative h-64 w-full overflow-hidden md:h-80">
+        <SriLankaImage
+          image={getBlogImage(params.slug)}
+          fill
+          priority
+          rounded="3xl"
+          className="rounded-none"
+          sizes="100vw"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/20 to-transparent" />
+      </div>
+
+      <div className="container-editorial py-16 md:py-20">
+        <div className="mx-auto max-w-prose">
+          <FadeIn>
+            <Link
+              href="/blog"
+              className="text-xs uppercase tracking-widest text-gray-500 transition-colors hover:text-ink"
+            >
+              ← All posts
+            </Link>
+            <div className="mt-8 flex items-center gap-3 text-xs uppercase tracking-widest text-gray-500">
+              <time dateTime={meta.date}>{formatDate(meta.date)}</time>
+              <span aria-hidden>·</span>
+              <span>{meta.readingTime}</span>
+            </div>
+            <h1 className="mt-4 text-4xl leading-[1.08] tracking-tightest md:text-5xl">
+              {meta.title}
+            </h1>
+          </FadeIn>
+          <FadeIn delay={80} className="mt-10">
+            <GlassPanel className="prose prose-sm max-w-none">
+              <Post />
+            </GlassPanel>
+          </FadeIn>
         </div>
       </div>
     </article>

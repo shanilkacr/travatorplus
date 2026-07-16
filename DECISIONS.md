@@ -39,6 +39,12 @@ instruction to "make reasonable decisions and note them."
 - Tokens live in `packages/shared/src/design/tokens.ts` (single source of truth) and are
   mirrored into `apps/web` Tailwind config + `globals.css`. `scripts/check-colors.mjs`
   fails CI if any non-grayscale hex appears in `apps/web` outside `globals.css`.
+- **Glassmorphism pivot (marketing + /chat shell).** UI chrome is frosted neutral
+  grayscale (blur, soft shadows, large radii, no outlines). Full-color Sri Lanka
+  photography comes from curated Unsplash URLs via `next/image` — not from UI hex.
+  Magic UI + Aceternity components are vendored under `components/ui` and
+  `components/aceternity`, toned to the monochrome palette.
+- **Typography = Mona Sans (300 + 400 only).** Loaded from [Google Fonts](https://fonts.google.com/specimen/Mona+Sans); headings use Light 300, body Regular 400.
 
 ## Open follow-ups
 - Reference chat-UI screenshots pending from the user; the `/chat` visual shell (frontend)

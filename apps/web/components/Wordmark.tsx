@@ -1,18 +1,23 @@
+import Image from "next/image";
 import Link from "next/link";
 
-/** Text wordmark — no logo image, monochrome. */
+/** Brand logo from /Logo — links to home. */
 export function Wordmark({ className = "" }: { className?: string }) {
   return (
     <Link
       href="/"
-      className={`font-headline text-lg tracking-tightest text-ink ${className}`}
+      className={`inline-flex items-center ${className}`}
       aria-label="Travator home"
     >
-      travator
-      <span aria-hidden className="align-super text-[0.6em] text-gray-500">
-        {" "}
-        SL
-      </span>
+      <Image
+        src="/brand/travator-logo.png"
+        alt="Travator"
+        width={1329}
+        height={643}
+        priority
+        className="h-7 w-auto md:h-8"
+        sizes="(max-width: 768px) 120px, 140px"
+      />
     </Link>
   );
 }
