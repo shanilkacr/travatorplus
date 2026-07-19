@@ -26,7 +26,7 @@ Postgres via tools — the LLM never invents them.
 ## Prerequisites
 
 - Node 20+, pnpm 11+
-- Docker (for Postgres 16 + pgvector and Redis) — or a local equivalent
+- Postgres 16+ with pgvector, and Redis — via Docker, **or** local installs (see below)
 
 ## Getting started
 
@@ -37,6 +37,24 @@ docker compose up -d            # Postgres + Redis
 pnpm db:migrate                 # creates pgvector extension + all tables
 pnpm db:seed                    # 12 hotels, 8 drivers, 30 knowledge chunks
 pnpm dev                        # web (3000), api (8787), ops
+```
+
+### No Docker? Local Postgres + Redis via Homebrew
+
+This was verified as a working alternative on macOS (pgvector's Homebrew bottle
+targets Postgres 17/18, not 16 — functionally equivalent for this schema):
+
+```bash
+brew install postgresql@17 redis pgvector
+brew services start postgresql@17
+brew services start redis
+
+createuser -s travator --pwprompt   # password: travator (or edit DATABASE_URL to match)
+createdb travator -O travator
+psql -U travator -d travator -h localhost -c "CREATE EXTENSION IF NOT EXISTS vector;"
+
+# .env: DATABASE_URL=postgres://travator:travator@localhost:5432/travator
+pnpm db:migrate && pnpm db:seed
 ```
 
 ## SSE event protocol (v1)
@@ -69,8 +87,8 @@ token file. Headings use Stack Sans Headline 300; base font size 14px.
 ## Milestones
 
 1. ✅ Monorepo scaffold, docker-compose, shared package, migrations + seed.
-2. Design system + marketing site (Home → chat, Our Story, Blog, Book a call).
-3. API: auth, conversations, SSE, LLMProvider abstraction (Anthropic + OpenAI), echo mode.
+2. ✅ Design system + marketing site (Home → chat, Our Story, Blog, Book a call).
+3. ✅ API: auth, conversations, SSE, LLMProvider abstraction (Anthropic + OpenAI), echo mode.
 4. Agent loop + tools (knowledge/hotels/drivers) + chat UI.
 5. Trips, ItineraryBuilder, holds + quote + BookingSummary.
 6. `confirm_booking` saga + ledger + mock payments + PaymentStatus.

@@ -6,9 +6,14 @@ instruction to "make reasonable decisions and note them."
 ## Environment / tooling
 - **Node 20+ target.** Dev machine runs Node 24; code targets Node 20 (engines field).
 - **Docker not installed on the build machine.** `docker-compose.yml` is authored and
-  correct, but migrations/seed/live API were not run here. To run locally you need
-  Docker Desktop (or a local Postgres 16 + pgvector and Redis). Everything that does
-  not need a live DB (typecheck, migration generation, unit tests) was verified.
+  correct and remains the documented/primary path (matches prod parity, pins pg16).
+  For local verification without Docker, Postgres 16 + pgvector + Redis were installed
+  directly via Homebrew — see README's "No Docker?" section. One wrinkle: pgvector's
+  Homebrew bottle only ships prebuilt for Postgres 17/18, not 16, so local dev runs
+  Postgres 17 instead of 16 (schema/SQL is identical; no pg16-only features used).
+  With that, milestone 3's full stack — migrate, seed, auth OTP, JWT, conversation
+  create/list, SSE message streaming, interactions, contact form, CORS — was exercised
+  end-to-end against a real DB, not just typechecked.
 - **pnpm `allowBuilds: esbuild`** enabled so tsx/vitest/drizzle-kit can build.
 
 ## Models

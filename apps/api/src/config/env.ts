@@ -4,9 +4,9 @@ import { z } from "zod";
 const EnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 
-  LLM_PROVIDER: z.enum(["anthropic", "openai", "google"]).default("anthropic"),
+  LLM_PROVIDER: z.enum(["anthropic", "openai", "google", "echo"]).default("anthropic"),
   LLM_MODEL: z.string().default("claude-sonnet-5"),
-  TASK_LLM_PROVIDER: z.enum(["anthropic", "openai", "google"]).default("anthropic"),
+  TASK_LLM_PROVIDER: z.enum(["anthropic", "openai", "google", "echo"]).default("anthropic"),
   TASK_LLM_MODEL: z.string().default("claude-haiku-4-5-20251001"),
 
   ANTHROPIC_API_KEY: z.string().optional(),
