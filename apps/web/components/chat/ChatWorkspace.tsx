@@ -27,7 +27,12 @@ import {
   ProfilePanel,
   SettingsPanel,
 } from "@/components/chat/RailPanels";
+import { getSamplePlanPreset } from "@/lib/sample-plans";
+import { DEMO_DAYS, DEMO_LINE_ITEMS, DEMO_TRIP } from "@/lib/demo-trip";
 import { cn } from "@/lib/utils";
+
+const DEFAULT_ASSISTANT_REPLY =
+  "Good shape for a week. I've drafted a route that keeps the driving sensible — two nights at Sigiriya so you get a dawn climb without a rushed morning, then Kandy, the hill-country train down to Ella, and a soft landing on the south coast. The planner on the right has the day-by-day and a running cost. Tell me what to change.";
 
 type RailKey = "profile" | "buddies" | "explore" | "map" | "budget" | "settings";
 
@@ -47,13 +52,28 @@ const PANELS: Record<RailKey, () => JSX.Element> = {
   settings: SettingsPanel,
 };
 
+const RAIL_BTN =
+  "btn !inline-grid h-12 w-12 place-items-center !rounded-[14px] !px-0 !py-0 transition-all";
+const RAIL_BTN_ACTIVE =
+  "btn-primary !inline-grid h-12 w-12 place-items-center !rounded-[14px] !px-0 !py-0 transition-all";
+const PROFILE_BTN =
+  "btn-profile !inline-grid h-12 w-12 place-items-center !rounded-[14px] !px-0 !py-0 text-base font-medium transition-all";
+
 interface Message {
   id: string;
   role: "user" | "assistant";
   text: string;
 }
 
-export function ChatWorkspace({ initialPrompt }: { initialPrompt: string }) {
+export function ChatWorkspace({
+  initialPrompt,
+  initialPreset,
+}: {
+  initialPrompt: string;
+  initialPreset?: string;
+}) {
+  const preset = getSamplePlanPreset(initialPreset);
+
   const [messages, setMessages] = useState<Message[]>(() =>
     initialPrompt
       ? [
@@ -61,14 +81,14 @@ export function ChatWorkspace({ initialPrompt }: { initialPrompt: string }) {
           {
             id: "m2",
             role: "assistant",
-            text: "Good shape for a week. I've drafted a route that keeps the driving sensible — two nights at Sigiriya so you get a dawn climb without a rushed morning, then Kandy, the hill-country train down to Ella, and a soft landing on the south coast. The planner on the right has the day-by-day and a running cost. Tell me what to change.",
+            text: preset?.assistantReply ?? DEFAULT_ASSISTANT_REPLY,
           },
         ]
       : []
   );
 
   const [openRail, setOpenRail] = useState<RailKey | null>(null);
-  const [plannerOpen, setPlannerOpen] = useState(true);
+  const [plannerOpen, setPlannerOpen] = useState(Boolean(initialPrompt));
 
   const Panel = openRail ? PANELS[openRail] : null;
 
@@ -90,29 +110,29 @@ export function ChatWorkspace({ initialPrompt }: { initialPrompt: string }) {
   }
 
   return (
-    <div className="flex h-[100svh] gap-2 overflow-hidden bg-gray-50 p-2 md:gap-3 md:p-3">
+    <div className="chat-workspace-bg h-[100svh] overflow-hidden">
+      <div className="relative z-10 flex h-full gap-2 p-2 md:gap-3 md:p-3">
       {/* ── Left rail ─────────────────────────────────────── */}
       <nav
         aria-label="Workspace"
-        className="flex w-14 shrink-0 flex-col items-center justify-between rounded-[20px] bg-white py-3 shadow-soft"
+        className="flex shrink-0 flex-col items-center justify-between rounded-[20px] p-2.5"
       >
-        <div className="flex flex-col items-center gap-1">
+        <div className="flex flex-col items-center gap-2.5">
           <button
             type="button"
             onClick={() => toggleRail("profile")}
             aria-label="Your profile"
             aria-pressed={openRail === "profile"}
             className={cn(
-              "grid h-9 w-9 place-items-center rounded-[12px] text-sm transition-colors",
-              openRail === "profile"
-                ? "bg-ink text-white"
-                : "bg-gray-100 text-ink hover:bg-gray-300"
+              PROFILE_BTN,
+              openRail === "profile" &&
+                "ring-2 ring-ink/10 ring-offset-2 ring-offset-gray-50"
             )}
           >
             S
           </button>
 
-          <span className="my-1.5 h-px w-5 bg-gray-100" aria-hidden />
+          <span className="h-px w-full bg-gray-100" aria-hidden />
 
           {RAIL.map(({ key, label, Icon }) => (
             <button
@@ -123,13 +143,11 @@ export function ChatWorkspace({ initialPrompt }: { initialPrompt: string }) {
               aria-pressed={openRail === key}
               title={label}
               className={cn(
-                "grid h-9 w-9 place-items-center rounded-[12px] transition-colors",
-                openRail === key
-                  ? "bg-ink text-white"
-                  : "text-gray-500 hover:bg-gray-50 hover:text-ink"
+                openRail === key ? RAIL_BTN_ACTIVE : RAIL_BTN,
+                openRail !== key && "text-gray-500"
               )}
             >
-              <Icon className="h-4 w-4" aria-hidden />
+              <Icon className="h-5 w-5" aria-hidden />
             </button>
           ))}
         </div>
@@ -141,19 +159,17 @@ export function ChatWorkspace({ initialPrompt }: { initialPrompt: string }) {
           aria-pressed={openRail === "settings"}
           title="Settings"
           className={cn(
-            "grid h-9 w-9 place-items-center rounded-[12px] transition-colors",
-            openRail === "settings"
-              ? "bg-ink text-white"
-              : "text-gray-500 hover:bg-gray-50 hover:text-ink"
+            openRail === "settings" ? RAIL_BTN_ACTIVE : RAIL_BTN,
+            openRail !== "settings" && "text-gray-500"
           )}
         >
-          <Settings className="h-4 w-4" aria-hidden />
+          <Settings className="h-5 w-5" aria-hidden />
         </button>
       </nav>
 
       {/* ── Rail panel ────────────────────────────────────── */}
       {Panel && (
-        <aside className="hidden w-72 shrink-0 animate-fade-up overflow-hidden rounded-[20px] bg-white shadow-soft lg:block">
+        <aside className="hidden w-72 shrink-0 animate-fade-up overflow-hidden rounded-[20px] lg:block">
           <Panel />
         </aside>
       )}
@@ -258,11 +274,16 @@ export function ChatWorkspace({ initialPrompt }: { initialPrompt: string }) {
       {plannerOpen && (
         <aside
           aria-label="Travel planner"
-          className="hidden w-80 shrink-0 animate-fade-up overflow-hidden rounded-[20px] bg-white shadow-soft xl:block"
+          className="hidden w-80 shrink-0 animate-fade-up overflow-hidden rounded-[20px] xl:block"
         >
-          <TravelPlanner />
+          <TravelPlanner
+            trip={preset?.trip ?? DEMO_TRIP}
+            days={preset?.days ?? DEMO_DAYS}
+            lineItems={preset?.lineItems ?? DEMO_LINE_ITEMS}
+          />
         </aside>
       )}
+      </div>
     </div>
   );
 }

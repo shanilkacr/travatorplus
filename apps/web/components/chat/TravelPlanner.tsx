@@ -9,6 +9,7 @@ import {
   MapPin,
   Users,
 } from "lucide-react";
+import type { ItineraryDay, QuoteLineItem } from "@travator/shared";
 import { cn } from "@/lib/utils";
 import { DEMO_DAYS, DEMO_LINE_ITEMS, DEMO_TRIP } from "@/lib/demo-trip";
 
@@ -22,33 +23,51 @@ const dayLabel = (iso: string) =>
     timeZone: "UTC",
   });
 
+type TripSummary = {
+  title: string;
+  travelers: number;
+  startDate: string;
+  endDate: string;
+  nights: number;
+};
+
+type TravelPlannerProps = {
+  trip?: TripSummary;
+  days?: ItineraryDay[];
+  lineItems?: (QuoteLineItem & { id: string })[];
+};
+
 /**
  * The trip's live working document: summary, day-by-day itinerary, and the
  * running cost. Sections collapse independently so a long trip stays scannable.
  */
-export function TravelPlanner() {
-  const [openDay, setOpenDay] = useState<string | null>(DEMO_DAYS[0]?.date ?? null);
+export function TravelPlanner({
+  trip = DEMO_TRIP,
+  days = DEMO_DAYS,
+  lineItems = DEMO_LINE_ITEMS,
+}: TravelPlannerProps) {
+  const [openDay, setOpenDay] = useState<string | null>(days[0]?.date ?? null);
   const [costOpen, setCostOpen] = useState(true);
 
-  const total = DEMO_LINE_ITEMS.reduce((sum, li) => sum + li.price.usdMinor, 0);
-  const perPerson = Math.round(total / DEMO_TRIP.travelers);
+  const total = lineItems.reduce((sum, li) => sum + li.price.usdMinor, 0);
+  const perPerson = Math.round(total / trip.travelers);
 
   return (
     <div className="flex h-full flex-col overflow-y-auto">
       {/* Trip summary */}
       <div className="border-b border-gray-100 px-5 py-5">
         <p className="eyebrow">Travel planner</p>
-        <h2 className="mt-2 text-lg leading-snug">{DEMO_TRIP.title}</h2>
+        <h2 className="mt-2 text-lg leading-snug">{trip.title}</h2>
 
         <dl className="mt-4 grid grid-cols-2 gap-3">
           {[
             {
               Icon: Calendar,
               label: "Dates",
-              value: `${dayLabel(DEMO_TRIP.startDate)} – ${dayLabel(DEMO_TRIP.endDate)}`,
+              value: `${dayLabel(trip.startDate)} – ${dayLabel(trip.endDate)}`,
             },
-            { Icon: MapPin, label: "Nights", value: `${DEMO_TRIP.nights} nights` },
-            { Icon: Users, label: "Travelers", value: `${DEMO_TRIP.travelers} adults` },
+            { Icon: MapPin, label: "Nights", value: `${trip.nights} nights` },
+            { Icon: Users, label: "Travelers", value: `${trip.travelers} adults` },
             { Icon: Car, label: "Transport", value: "Private driver" },
           ].map(({ Icon, label, value }) => (
             <div key={label} className="rounded-[12px] bg-gray-50 px-3 py-2.5">
@@ -66,11 +85,11 @@ export function TravelPlanner() {
       <div className="border-b border-gray-100 px-5 py-5">
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-sm text-ink">Itinerary</h3>
-          <span className="text-xs text-gray-500">{DEMO_DAYS.length} days</span>
+          <span className="text-xs text-gray-500">{days.length} days</span>
         </div>
 
         <ol className="space-y-1">
-          {DEMO_DAYS.map((day, i) => {
+          {days.map((day, i) => {
             const open = openDay === day.date;
             return (
               <li key={day.date}>
@@ -150,7 +169,7 @@ export function TravelPlanner() {
 
         {costOpen && (
           <ul className="mb-4 space-y-2">
-            {DEMO_LINE_ITEMS.map((li) => (
+            {lineItems.map((li) => (
               <li key={li.id} className="flex items-baseline justify-between gap-3">
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-xs text-ink">{li.label}</span>

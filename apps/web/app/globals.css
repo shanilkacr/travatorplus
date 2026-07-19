@@ -31,6 +31,18 @@
   --color-accent: #e8833a;
   --color-accent-rgb: 232 131 58;
 
+  /* Warm mesh tones for the chat workspace backdrop — muted, orange-leaning. */
+  --mesh-warm: #e8cdb0;
+  --mesh-warm-rgb: 232 205 176;
+  --mesh-orange-light: #dbb896;
+  --mesh-orange-light-rgb: 219 184 150;
+  --mesh-peach: #e2c4a8;
+  --mesh-peach-rgb: 226 196 168;
+  --mesh-orange: #cfa078;
+  --mesh-orange-rgb: 207 160 120;
+  --mesh-amber: #d4a882;
+  --mesh-amber-rgb: 212 168 130;
+
   --glass-bg: rgba(255, 255, 255, 0.55);
   --glass-bg-strong: rgba(255, 255, 255, 0.72);
   --glass-blur: 12px;
@@ -128,6 +140,102 @@ body {
     background-size: 20px 20px;
   }
 
+  /*
+   * Chat workspace — warm glass mesh over the neutral shell. Gray-50 stays
+   * the base; soft orange/yellow blooms sit beneath a frosted dot veil.
+   */
+  .chat-workspace-bg {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--color-gray-50);
+  }
+
+  .chat-workspace-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        ellipse 90% 70% at 4% 8%,
+        rgb(var(--mesh-peach-rgb) / 0.46) 0%,
+        transparent 58%
+      ),
+      radial-gradient(
+        ellipse 82% 62% at 96% 6%,
+        rgb(var(--mesh-orange-light-rgb) / 0.4) 0%,
+        transparent 54%
+      ),
+      radial-gradient(
+        ellipse 88% 78% at 90% 94%,
+        rgb(var(--mesh-warm-rgb) / 0.42) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 74% 68% at 8% 90%,
+        rgb(var(--color-accent-rgb) / 0.2) 0%,
+        transparent 56%
+      ),
+      radial-gradient(
+        ellipse 64% 56% at 38% 28%,
+        rgb(var(--mesh-orange-rgb) / 0.32) 0%,
+        transparent 58%
+      ),
+      radial-gradient(
+        ellipse 52% 48% at 62% 62%,
+        rgb(var(--mesh-amber-rgb) / 0.28) 0%,
+        transparent 62%
+      ),
+      radial-gradient(
+        ellipse 48% 44% at 72% 38%,
+        rgb(var(--mesh-orange-light-rgb) / 0.26) 0%,
+        transparent 60%
+      ),
+      radial-gradient(
+        ellipse 56% 50% at 22% 52%,
+        rgb(var(--mesh-orange-rgb) / 0.24) 0%,
+        transparent 64%
+      ),
+      radial-gradient(
+        ellipse 58% 52% at 50% 44%,
+        rgb(var(--color-white-rgb) / 0.48) 0%,
+        transparent 68%
+      );
+  }
+
+  .chat-workspace-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    backdrop-filter: blur(120px) saturate(1.02);
+    -webkit-backdrop-filter: blur(120px) saturate(1.02);
+    background-color: rgb(var(--color-gray-50-rgb) / 0.72);
+    box-shadow:
+      inset 0 1px 0 rgb(var(--color-white-rgb) / 0.72),
+      inset 0 0 0 1px rgb(var(--color-white-rgb) / 0.28);
+    background-image:
+      radial-gradient(
+        circle at center,
+        rgb(var(--color-gray-300-rgb) / 0.18) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        155deg,
+        rgb(var(--color-white-rgb) / 0.35) 0%,
+        rgb(var(--color-gray-50-rgb) / 0.38) 42%,
+        rgb(var(--color-gray-100-rgb) / 0.22) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgb(var(--color-white-rgb) / 0.22) 0%,
+        rgb(var(--color-gray-50-rgb) / 0.28) 100%
+      );
+    background-size: 28px 28px, 100% 100%, 100% 100%;
+  }
+
   .glass {
     border-radius: 40px;
     @apply shadow-glass;
@@ -149,6 +257,48 @@ body {
     box-shadow: 0 4px 24px rgba(10, 10, 10, 0.04);
     backdrop-filter: blur(200px);
     -webkit-backdrop-filter: blur(200px);
+  }
+
+  /* Bottom scrim — full blur at bottom, transparent from 50% upward. */
+  .card-image-scrim {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 50%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .card-image-scrim-blur {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    backdrop-filter: blur(36px) saturate(1.25);
+    -webkit-backdrop-filter: blur(36px) saturate(1.25);
+    mask-image: linear-gradient(to top, #000 0%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, #000 0%, transparent 100%);
+  }
+
+  .card-image-scrim-fill {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: linear-gradient(
+      to top,
+      rgb(var(--color-gray-500-rgb) / 0.55) 0%,
+      transparent 100%
+    );
+  }
+
+  .card-image-footer-content {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 3;
+    padding: 1.5rem;
+    color: #fff;
+    text-shadow: 0 1px 10px rgb(0 0 0 / 0.45);
+    transform: translateZ(0);
   }
 
   .surface-muted {
@@ -219,6 +369,38 @@ body {
     box-shadow: inset 0 0 0 1px rgba(10, 10, 10, 0.05);
   }
 
+  /* Profile avatar — brand orange, always on. */
+  .btn-profile {
+    @apply inline-flex items-center justify-center rounded-[14px] text-sm font-medium text-white transition-all duration-200;
+    background: linear-gradient(180deg, #f5a05a 0%, var(--color-accent) 52%, #d06a24 100%);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.42),
+      inset 0 -1.5px 1px rgba(10, 10, 10, 0.14),
+      inset 0 0 0 1px rgba(10, 10, 10, 0.08),
+      0 1px 2px rgba(10, 10, 10, 0.08),
+      0 4px 10px rgba(232, 131, 58, 0.28),
+      0 10px 24px rgba(232, 131, 58, 0.2);
+  }
+  .btn-profile:hover {
+    background: linear-gradient(180deg, #f8ad6c 0%, #ec8f44 52%, #d9732a 100%);
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.48),
+      inset 0 -1.5px 1px rgba(10, 10, 10, 0.12),
+      inset 0 0 0 1px rgba(10, 10, 10, 0.08),
+      0 2px 4px rgba(10, 10, 10, 0.08),
+      0 8px 18px rgba(232, 131, 58, 0.34),
+      0 16px 32px rgba(232, 131, 58, 0.22);
+  }
+  .btn-profile:active {
+    transform: translateY(0.5px);
+    background: linear-gradient(180deg, #e8833a 0%, #d06a24 100%);
+    box-shadow:
+      inset 0 1px 2px rgba(10, 10, 10, 0.18),
+      inset 0 0 0 1px rgba(10, 10, 10, 0.1),
+      0 1px 2px rgba(10, 10, 10, 0.06);
+  }
+
   /* Same key, tuned to read against photography and the dark footer. */
   .btn-inverse {
     @apply inline-flex items-center justify-center rounded-[14px] px-6 py-3 text-sm text-ink transition-all duration-200;
@@ -254,8 +436,18 @@ body {
     box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.08), 0 4px 16px rgba(10, 10, 10, 0.06);
   }
 
+  /* Boxed reading column — used by the blog, Our Story and the footer. */
   .container-editorial {
     @apply mx-auto w-full max-w-6xl px-6 md:px-10;
+  }
+
+  /*
+   * Full-bleed section container. Gutters match the hero card's 10px frame so
+   * every full-width block on the home page lines up with it. Prose inside
+   * still needs its own max-width — full bleed is for layout, not line length.
+   */
+  .container-wide {
+    @apply mx-auto w-full px-[10px];
   }
 
   /*
@@ -281,8 +473,89 @@ body {
     @apply flex w-max items-center gap-12;
     animation: marquee 36s linear infinite;
   }
-  .marquee:hover .marquee-track {
+  .marquee:not(.marquee-continuous):hover .marquee-track {
     animation-play-state: paused;
+  }
+
+  .marquee-continuous {
+    mask-image: none;
+    -webkit-mask-image: none;
+    overflow: visible;
+    padding-block: 3px;
+  }
+
+  .plan-marquee-card-wrap {
+    position: relative;
+    flex-shrink: 0;
+    width: calc(100vw - 3rem);
+    height: 28rem;
+  }
+
+  .plan-marquee-card-wrap::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 26px;
+    background: linear-gradient(
+      135deg,
+      rgb(var(--color-gray-500-rgb)) 0%,
+      rgb(var(--color-gray-300-rgb)) 50%,
+      rgb(var(--color-gray-500-rgb)) 100%
+    );
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .plan-marquee-card-wrap:hover::before {
+    opacity: 1;
+  }
+
+  .plan-marquee-card {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 24px;
+    overflow: hidden;
+    transition: box-shadow 0.25s ease;
+  }
+
+  .plan-marquee-card-wrap:hover .plan-marquee-card {
+    box-shadow: 0 12px 40px rgb(0 0 0 / 0.14);
+  }
+
+  .plan-marquee-card-cta {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgb(0 0 0 / 0.28);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+
+  .plan-marquee-card-wrap:hover .plan-marquee-card-cta {
+    opacity: 1;
+  }
+
+  @media (min-width: 768px) {
+    .plan-marquee-card-wrap {
+      width: calc((100vw - 1.25rem) / 2);
+      height: 30rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .plan-marquee-card-wrap {
+      width: calc((100vw - 3 * 1.25rem) / 4);
+      height: 32rem;
+    }
   }
 
   /* Horizontal card rail with scroll snapping (no JS carousels). */

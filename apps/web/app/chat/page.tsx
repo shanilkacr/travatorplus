@@ -10,7 +10,12 @@ export const metadata: Metadata = {
 export default function ChatPage({
   searchParams,
 }: {
-  searchParams: { prompt?: string };
+  searchParams: { prompt?: string; preset?: string };
 }) {
-  return <ChatWorkspace initialPrompt={searchParams.prompt ?? ""} />;
+  return (
+    <ChatWorkspace
+      initialPrompt={searchParams.prompt ?? ""}
+      initialPreset={searchParams.preset}
+    />
+  );
 }

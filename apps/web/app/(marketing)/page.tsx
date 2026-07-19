@@ -16,7 +16,9 @@ import { HeroPrompt } from "@/components/HeroPrompt";
 import { FadeIn } from "@/components/FadeIn";
 import { FaqAccordion } from "@/components/FaqAccordion";
 import { ScrollRevealText } from "@/components/ScrollRevealText";
+import { SamplePlansMarquee } from "@/components/SamplePlansMarquee";
 import { SriLankaImage } from "@/components/SriLankaImage";
+import { SAMPLE_PLANS } from "@/lib/sample-plans";
 import { SRI_LANKA_IMAGES } from "@/lib/images";
 
 /* ── Content (all original Travator copy) ─────────────────── */
@@ -113,44 +115,6 @@ const STAYS = [
     price: 60,
     tags: ["Beachfront", "Surf", "Relaxed"],
     image: SRI_LANKA_IMAGES.stiltFishermen,
-  },
-];
-
-const PLANS = [
-  {
-    title: "The first-timer loop",
-    days: "7 days",
-    route: "Sigiriya → Kandy → Ella → Mirissa",
-    note: "The classic circle: rock fortress at dawn, the hill-country train, a beach finish.",
-    image: SRI_LANKA_IMAGES.hero,
-  },
-  {
-    title: "Honeymoon, south coast",
-    days: "6 days",
-    route: "Galle Fort → Weligama → Mirissa",
-    note: "Clifftop stays, quiet bays, whales at sunrise and ramparts at golden hour.",
-    image: SRI_LANKA_IMAGES.southCoast,
-  },
-  {
-    title: "Tea country slow week",
-    days: "8 days",
-    route: "Kandy → Nuwara Eliya → Ella",
-    note: "Misty mornings, estate walks, and the world's most scenic train ride.",
-    image: SRI_LANKA_IMAGES.teaPicker,
-  },
-  {
-    title: "East coast surf trip",
-    days: "9 days",
-    route: "Trincomalee → Arugam Bay",
-    note: "May to September, when the east is glassy and the point breaks work.",
-    image: SRI_LANKA_IMAGES.lagoon,
-  },
-  {
-    title: "Family wild week",
-    days: "8 days",
-    route: "Sigiriya → Kandy → Yala",
-    note: "Elephants at Minneriya, leopards at Yala, and pools at every stop.",
-    image: SRI_LANKA_IMAGES.wildlife,
   },
 ];
 
@@ -306,10 +270,10 @@ export default function HomePage() {
 
       {/* Lead paragraph — display-scale, revealed word by word on scroll.
           Stays a <p> so it reads as the page's lead copy. */}
-      <section className="container-editorial py-24 md:py-36">
+      <section className="container-wide py-24 md:py-36">
         <ScrollRevealText
           text="Describe the trip you want. Travator builds the itinerary, finds the stays, and books the driver — while you watch it happen."
-          className="mx-auto max-w-4xl text-center text-3xl leading-[1.25] tracking-tightest text-ink md:text-5xl"
+          className="mx-auto max-w-6xl text-center text-3xl leading-[1.25] tracking-tightest text-ink md:text-5xl"
         />
       </section>
 
@@ -325,30 +289,34 @@ export default function HomePage() {
           />
           <div
             aria-hidden
-            className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/55 to-black/40"
+            className="absolute inset-0 bg-[linear-gradient(90deg,rgba(0,0,0,0.68)_0%,rgba(0,0,0,0.38)_28%,rgba(0,0,0,0.12)_58%,rgba(0,0,0,0.06)_100%)]"
           />
-          <div className="relative z-10 grid grid-cols-1 items-center gap-10 p-8 md:grid-cols-2 md:gap-12 md:p-12 lg:gap-16 lg:p-16">
+          <div className="relative z-10 grid grid-cols-1 items-center gap-10 p-8 md:grid-cols-[30%_40%_30%] md:gap-0 md:p-12 lg:p-16">
             <FadeIn>
-              <p className="mb-4 text-xs text-white/70">How it works</p>
-              <h2 className="text-3xl text-white md:text-4xl lg:text-[2.75rem] lg:leading-[1.1]">
-                From "we should go" to booked — in three steps
+              <h2 className="text-3xl text-white md:text-4xl">
+                From
+                <br />
+                &ldquo;we should go&rdquo;
+                <br />
+                to booked in
+                <br />
+                three steps
               </h2>
             </FadeIn>
-            <div className="flex flex-col gap-4">
+            <div aria-hidden className="hidden md:block" />
+            <div className="flex flex-col gap-8 md:gap-10">
               {STEPS.map((s, i) => (
                 <FadeIn key={s.n} delay={i * 80}>
-                  <div className="flex items-start gap-4 rounded-[20px] bg-white/92 p-5 shadow-glass backdrop-blur-md md:gap-5 md:p-6">
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] bg-gray-50 shadow-soft">
-                      <s.Icon className="h-5 w-5 text-ink" aria-hidden />
+                  <div className="flex items-start gap-4 md:gap-5">
+                    <span className="font-headline shrink-0 text-2xl text-white/60">
+                      {s.n}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-3">
-                        <h3 className="text-lg md:text-xl">{s.title}</h3>
-                        <span className="font-headline shrink-0 text-2xl text-gray-300">
-                          {s.n}
-                        </span>
-                      </div>
-                      <p className="mt-2 text-sm leading-relaxed text-gray-500">{s.body}</p>
+                      <h3 className="flex items-center gap-2.5 text-lg text-white md:text-xl">
+                        <span>{s.title}</span>
+                        <s.Icon className="h-5 w-5 shrink-0 text-white" aria-hidden />
+                      </h3>
+                      <p className="mt-1 text-sm leading-relaxed text-white/80">{s.body}</p>
                     </div>
                   </div>
                 </FadeIn>
@@ -358,16 +326,35 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Sample plans rail */}
+      <section id="plans" className="bg-gray-50/60 py-20 md:py-28">
+        <div className="container-wide">
+          <FadeIn className="mx-auto max-w-2xl text-center">
+            <p className="eyebrow mb-4">Sample plans</p>
+            <h2 className="text-3xl md:text-4xl">
+              See what a great week here looks like
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-sm text-gray-500">
+              Start from a proven shape, then make it yours — every plan is
+              editable in chat.
+            </p>
+          </FadeIn>
+        </div>
+        <FadeIn delay={100}>
+          <SamplePlansMarquee plans={SAMPLE_PLANS} />
+        </FadeIn>
+      </section>
+
       {/* Core features 2×2 */}
       <section className="bg-gray-50/60 py-20 md:py-28">
-        <div className="container-editorial">
+        <div className="container-wide">
           <FadeIn className="mx-auto max-w-2xl text-center">
             <p className="eyebrow mb-4">Why it works</p>
             <h2 className="text-3xl md:text-4xl">
               Everything a good trip needs, nothing it doesn't
             </h2>
           </FadeIn>
-          <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
             {FEATURES.map((f, i) => (
               <FadeIn key={f.title} delay={i * 60}>
                 <div className="group h-full overflow-hidden rounded-[24px] bg-white shadow-glass">
@@ -377,7 +364,7 @@ export default function HomePage() {
                       fill
                       rounded="none"
                       className="rounded-none transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width:768px) 100vw, 50vw"
+                      sizes="(max-width:768px) 100vw, (max-width:1280px) 50vw, 25vw"
                     />
                   </div>
                   <div className="p-7">
@@ -393,7 +380,7 @@ export default function HomePage() {
 
       {/* Stays rail */}
       <section id="stays" className="py-20 md:py-28">
-        <div className="container-editorial">
+        <div className="container-wide">
           <FadeIn className="flex flex-wrap items-end justify-between gap-4">
             <div>
               <p className="eyebrow mb-4">Stays</p>
@@ -407,7 +394,7 @@ export default function HomePage() {
           </FadeIn>
         </div>
         <FadeIn delay={100}>
-          <div className="rail mt-12 px-6 md:px-[max(2.5rem,calc((100vw-72rem)/2))]">
+          <div className="rail mt-12 px-[10px]">
             {STAYS.map((stay) => (
               <Link
                 key={stay.name}
@@ -456,60 +443,15 @@ export default function HomePage() {
         </FadeIn>
       </section>
 
-      {/* Sample plans rail */}
-      <section id="plans" className="bg-gray-50/60 py-20 md:py-28">
-        <div className="container-editorial">
-          <FadeIn className="mx-auto max-w-2xl text-center">
-            <p className="eyebrow mb-4">Sample plans</p>
-            <h2 className="text-3xl md:text-4xl">
-              See what a great week here looks like
-            </h2>
-            <p className="mx-auto mt-4 max-w-md text-sm text-gray-500">
-              Start from a proven shape, then make it yours — every plan is
-              editable in chat.
-            </p>
-          </FadeIn>
-        </div>
-        <FadeIn delay={100}>
-          <div className="rail mt-12 px-6 md:px-[max(2.5rem,calc((100vw-72rem)/2))]">
-            {PLANS.map((plan) => (
-              <Link
-                key={plan.title}
-                href={`/chat?prompt=${encodeURIComponent(`Plan me ${plan.title.toLowerCase()}: ${plan.route}`)}`}
-                className="group relative h-[400px] w-[300px] shrink-0 overflow-hidden rounded-[24px] shadow-glass"
-              >
-                <SriLankaImage
-                  image={plan.image}
-                  fill
-                  rounded="none"
-                  className="rounded-none transition-transform duration-500 group-hover:scale-105"
-                  sizes="300px"
-                />
-                <div
-                  aria-hidden
-                  className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent"
-                />
-                <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                  <span className="rounded-[12px] bg-white/20 px-3 py-1 text-xs backdrop-blur-sm">
-                    {plan.days}
-                  </span>
-                  <h3 className="mt-3 text-xl">{plan.title}</h3>
-                  <p className="mt-1 text-sm text-white/80">{plan.route}</p>
-                  <p className="mt-2 text-xs leading-relaxed text-white/70">{plan.note}</p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </FadeIn>
-      </section>
-
       {/* Why choose us — 6 grid */}
-      <section className="container-editorial py-20 md:py-28">
+      <section className="container-wide py-20 md:py-28">
         <FadeIn className="mx-auto max-w-2xl text-center">
           <p className="eyebrow mb-4">The Travator difference</p>
           <h2 className="text-3xl md:text-4xl">Less stress. Better trip.</h2>
         </FadeIn>
-        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
+        {/* Six short cards: three roomy columns through desktop, six across
+            only once the viewport is genuinely wide enough to carry them. */}
+        <div className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-6">
           {WHY.map((w, i) => (
             <FadeIn key={w.title} delay={i * 50}>
               <div className="h-full rounded-[24px] bg-white p-7 shadow-soft transition-shadow hover:shadow-glass">
@@ -525,9 +467,11 @@ export default function HomePage() {
       </section>
 
       {/* Split 1 — text left, image right */}
-      <section className="container-editorial py-10 md:py-16">
+      <section className="container-wide py-10 md:py-16">
         <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
-          <FadeIn>
+          {/* Prose keeps its own measure — the section is full bleed, the
+              reading column is not. */}
+          <FadeIn className="mx-auto w-full max-w-xl lg:mx-0 lg:ml-auto">
             <p className="eyebrow mb-4">Ground truth</p>
             <h2 className="text-3xl md:text-4xl">
               Plans grounded in real roads, not map optimism
@@ -551,7 +495,7 @@ export default function HomePage() {
             </Link>
           </FadeIn>
           <FadeIn delay={100}>
-            <div className="relative h-[380px] overflow-hidden rounded-[32px] shadow-glass-lg md:h-[440px]">
+            <div className="relative h-[380px] overflow-hidden rounded-[32px] shadow-glass-lg md:h-[520px]">
               <SriLankaImage
                 image={SRI_LANKA_IMAGES.ellaTrain}
                 fill
@@ -565,10 +509,10 @@ export default function HomePage() {
       </section>
 
       {/* Split 2 — image left, text right */}
-      <section className="container-editorial py-10 md:py-16">
+      <section className="container-wide py-10 md:py-16">
         <div className="grid grid-cols-1 items-center gap-10 md:grid-cols-2 md:gap-16">
           <FadeIn className="md:order-1">
-            <div className="relative h-[380px] overflow-hidden rounded-[32px] shadow-glass-lg md:h-[440px]">
+            <div className="relative h-[380px] overflow-hidden rounded-[32px] shadow-glass-lg md:h-[520px]">
               <SriLankaImage
                 image={SRI_LANKA_IMAGES.wildlife}
                 fill
@@ -578,7 +522,10 @@ export default function HomePage() {
               />
             </div>
           </FadeIn>
-          <FadeIn delay={100} className="md:order-2">
+          <FadeIn
+            delay={100}
+            className="mx-auto w-full max-w-xl md:order-2 lg:mx-0 lg:mr-auto"
+          >
             <p className="eyebrow mb-4">People behind the machine</p>
             <h2 className="text-3xl md:text-4xl">
               A real human is one message away
@@ -606,12 +553,12 @@ export default function HomePage() {
 
       {/* Testimonials */}
       <section className="bg-gray-50/60 py-20 md:py-28">
-        <div className="container-editorial">
+        <div className="container-wide">
           <FadeIn className="mx-auto max-w-2xl text-center">
             <p className="eyebrow mb-4">Travelers</p>
             <h2 className="text-3xl md:text-4xl">They went. You're next.</h2>
           </FadeIn>
-          <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
             {TESTIMONIALS.map((t, i) => (
               <FadeIn key={t.name} delay={i * 60}>
                 <figure className="h-full rounded-[24px] bg-white p-8 shadow-glass">
@@ -643,9 +590,9 @@ export default function HomePage() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="container-editorial py-20 md:py-28">
+      <section id="faq" className="container-wide py-20 md:py-28">
         <div className="grid grid-cols-1 gap-10 md:grid-cols-12 md:gap-16">
-          <FadeIn className="md:col-span-4">
+          <FadeIn className="md:col-span-4 xl:col-span-3">
             <p className="eyebrow mb-4">FAQ</p>
             <h2 className="text-3xl md:text-4xl">Questions, answered</h2>
             <p className="mt-4 text-sm text-gray-500">
@@ -655,14 +602,14 @@ export default function HomePage() {
               Book a call
             </Link>
           </FadeIn>
-          <FadeIn delay={100} className="md:col-span-8">
+          <FadeIn delay={100} className="md:col-span-8 xl:col-span-9">
             <FaqAccordion items={FAQS} />
           </FadeIn>
         </div>
       </section>
 
       {/* CTA banner */}
-      <section className="container-editorial pb-24">
+      <section className="container-wide pb-24">
         <FadeIn>
           <div className="relative overflow-hidden rounded-[40px] shadow-glass-lg">
             <Image
