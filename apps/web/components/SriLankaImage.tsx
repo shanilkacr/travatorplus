@@ -8,10 +8,11 @@ interface SriLankaImageProps {
   priority?: boolean;
   fill?: boolean;
   sizes?: string;
-  rounded?: "lg" | "xl" | "2xl" | "3xl";
+  rounded?: "none" | "lg" | "xl" | "2xl" | "3xl";
 }
 
 const roundedMap = {
+  none: "rounded-none",
   lg: "rounded-2xl",
   xl: "rounded-3xl",
   "2xl": "rounded-4xl",

@@ -143,17 +143,25 @@ body {
   }
 
   .btn {
-    @apply inline-flex items-center justify-center rounded-[1rem] bg-gray-100/80 px-6 py-3 text-sm tracking-wide shadow-soft backdrop-blur-sm transition-all duration-200;
+    @apply inline-flex items-center justify-center rounded-full bg-gray-100/80 px-6 py-3 text-sm tracking-wide shadow-soft backdrop-blur-sm transition-all duration-200;
   }
   .btn:hover {
     @apply bg-gray-100 shadow-glass;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-[1rem] bg-ink px-6 py-3 text-sm tracking-wide text-white shadow-glass transition-opacity duration-200;
+    @apply inline-flex items-center justify-center rounded-full bg-ink px-6 py-3 text-sm tracking-wide text-white shadow-glass transition-opacity duration-200;
   }
   .btn-primary:hover {
     opacity: 0.88;
+  }
+
+  /* Inverted pill for use over photography / dark surfaces. */
+  .btn-inverse {
+    @apply inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm tracking-wide text-ink shadow-glass transition-opacity duration-200;
+  }
+  .btn-inverse:hover {
+    opacity: 0.9;
   }
 
   .input {
@@ -169,6 +177,60 @@ body {
 
   .eyebrow {
     @apply text-xs uppercase tracking-widest text-gray-500;
+  }
+
+  /* Infinite marquee — track is duplicated once in markup for a seamless loop. */
+  .marquee {
+    @apply overflow-hidden;
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      var(--color-black) 12%,
+      var(--color-black) 88%,
+      transparent
+    );
+  }
+  .marquee-track {
+    @apply flex w-max items-center gap-12;
+    animation: marquee 36s linear infinite;
+  }
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+
+  /* Horizontal card rail with scroll snapping (no JS carousels). */
+  .rail {
+    @apply flex snap-x snap-mandatory gap-5 overflow-x-auto pb-4;
+    scrollbar-width: none;
+  }
+  .rail::-webkit-scrollbar {
+    display: none;
+  }
+  .rail > * {
+    @apply snap-start;
+  }
+
+  /* FAQ accordion via native details/summary. */
+  .faq-item summary {
+    @apply flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-base text-ink;
+  }
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq-item summary .faq-icon {
+    @apply shrink-0 transition-transform duration-200;
+  }
+  .faq-item[open] summary .faq-icon {
+    transform: rotate(45deg);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
   }
 }
 

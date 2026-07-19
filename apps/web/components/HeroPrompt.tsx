@@ -2,14 +2,16 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ArrowRight } from "lucide-react";
 
 const SUGGESTIONS = [
   "7 days, beaches + hill country",
-  "Land in Colombo on the 14th, 8 days, quiet beaches, $150/night",
+  "Land in Colombo on the 14th, 8 days, $150/night",
   "Kandy, Ella & Sigiriya by private driver",
-  "Honeymoon: Galle Fort + south coast, 5 nights",
+  "Honeymoon: Galle Fort + south coast",
 ];
 
+/** Hero product entry — describe the trip, land in /chat with it pre-sent. */
 export function HeroPrompt() {
   const router = useRouter();
   const [value, setValue] = useState("");
@@ -27,7 +29,7 @@ export function HeroPrompt() {
           e.preventDefault();
           start(value);
         }}
-        className="group relative"
+        className="glass-panel !p-3 md:!p-4"
       >
         <textarea
           value={value}
@@ -38,32 +40,33 @@ export function HeroPrompt() {
               start(value);
             }
           }}
-          rows={3}
+          rows={2}
           placeholder="Describe your trip — dates, vibe, budget…"
           aria-label="Describe your trip"
-          className="input resize-none text-lg leading-relaxed"
+          className="w-full resize-none bg-transparent px-3 py-2 text-base leading-relaxed outline-none placeholder:text-gray-500 md:text-lg"
         />
-        <div className="mt-4 flex items-center justify-between gap-4">
-          <span className="text-xs text-gray-500">
-            Enter to start · Shift+Enter for a new line
+        <div className="flex items-center justify-between gap-3 px-1 pt-1">
+          <span className="hidden text-xs text-gray-500 sm:block">
+            Free to plan · Pay only when you book
           </span>
           <button
             type="submit"
             disabled={!value.trim()}
-            className="btn-primary disabled:cursor-not-allowed disabled:opacity-50"
+            className="btn-primary gap-2 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Plan my trip →
+            Plan my trip
+            <ArrowRight className="h-4 w-4" aria-hidden />
           </button>
         </div>
       </form>
 
-      <ul className="mt-6 flex flex-wrap justify-center gap-2">
+      <ul className="mt-5 flex flex-wrap justify-center gap-2">
         {SUGGESTIONS.map((s) => (
           <li key={s}>
             <button
               type="button"
               onClick={() => start(s)}
-              className="rounded-full bg-white/50 px-4 py-2 text-xs text-gray-500 shadow-soft transition-colors hover:bg-white/70 hover:text-ink"
+              className="rounded-full bg-white/25 px-4 py-2 text-xs text-white backdrop-blur-md transition-colors hover:bg-white/40"
             >
               {s}
             </button>
