@@ -1,0 +1,246 @@
+"use client";
+
+import { useRef, useState } from "react";
+import { ArrowUp, MapPin, X } from "lucide-react";
+import { DurationStepper } from "@/components/ui/duration-stepper";
+import { useTypewriter } from "@/hooks/useTypewriter";
+import { cn } from "@/lib/utils";
+
+/** Cycled through the placeholder while the composer is empty. */
+const EXAMPLES = [
+  "Quiet beaches, no crowds, good food…",
+  "Hill country by train, then somewhere to swim…",
+  "First time here — show me the classics…",
+  "Honeymoon: Galle Fort and the south coast…",
+  "Surf trip, and I want to see elephants…",
+];
+
+export const DESTINATIONS = [
+  "Sigiriya",
+  "Kandy",
+  "Ella",
+  "Galle Fort",
+  "Mirissa",
+  "Nuwara Eliya",
+  "Yala",
+  "Trincomalee",
+  "Arugam Bay",
+  "Colombo",
+];
+
+export interface TripComposerSubmission {
+  text: string;
+  days: number;
+  destinations: string[];
+}
+
+interface TripComposerProps {
+  /**
+   * `hero` — glass shell over photography, destination rail always visible.
+   * `chat` — plain card on a light surface, rail hidden behind a toggle.
+   */
+  variant?: "hero" | "chat";
+  placeholderExamples?: string[];
+  /** `chat` uses a short static placeholder instead of the typewriter. */
+  staticPlaceholder?: string;
+  onSubmit: (submission: TripComposerSubmission) => void;
+  className?: string;
+}
+
+export function TripComposer({
+  variant = "hero",
+  placeholderExamples = EXAMPLES,
+  staticPlaceholder,
+  onSubmit,
+  className,
+}: TripComposerProps) {
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+
+  const [value, setValue] = useState("");
+  const [days, setDays] = useState(7);
+  const [picked, setPicked] = useState<string[]>([]);
+  const [leaving, setLeaving] = useState<string | null>(null);
+  // Chat keeps the rail collapsed until it's wanted.
+  const [railOpen, setRailOpen] = useState(variant === "hero");
+
+  const isHero = variant === "hero";
+  const isEmpty = value.trim() === "" && picked.length === 0;
+  const typed = useTypewriter(placeholderExamples, {
+    paused: !isEmpty || Boolean(staticPlaceholder),
+  });
+  const placeholder = staticPlaceholder ?? typed;
+
+  const available = DESTINATIONS.filter((d) => !picked.includes(d));
+
+  function addDestination(name: string) {
+    setLeaving(name);
+    setTimeout(() => {
+      setPicked((cur) => (cur.includes(name) ? cur : [...cur, name]));
+      setLeaving(null);
+      inputRef.current?.focus();
+    }, 140);
+  }
+
+  function removeDestination(name: string) {
+    setPicked((cur) => cur.filter((d) => d !== name));
+    inputRef.current?.focus();
+  }
+
+  const canSubmit = picked.length > 0 || value.trim().length > 0;
+
+  function submit() {
+    if (!canSubmit) return;
+    onSubmit({ text: value.trim(), days, destinations: picked });
+    setValue("");
+    setPicked([]);
+    if (!isHero) setRailOpen(false);
+  }
+
+  return (
+    <div className={cn("w-full text-left", className)}>
+      <div
+        className={cn(
+          isHero
+            ? "glass-panel !rounded-[26px] !p-2"
+            : "rounded-[24px] bg-gray-50 p-2"
+        )}
+      >
+        {/* Typing surface */}
+        <div
+          onClick={() => inputRef.current?.focus()}
+          className="cursor-text rounded-[20px] bg-white px-4 pb-3 pt-4 shadow-soft"
+        >
+          {/* Destinations sit in the text flow as words, not chips. */}
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            {picked.map((name) => (
+              <span
+                key={name}
+                className="group inline-flex animate-chip-in items-baseline whitespace-nowrap text-[18px] leading-7 text-ink underline decoration-brand decoration-2 underline-offset-4"
+              >
+                {name}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeDestination(name);
+                  }}
+                  aria-label={`Remove ${name}`}
+                  /* `hidden` (not opacity) so no space is reserved when idle. */
+                  className="ml-1 hidden h-4 w-4 shrink-0 place-items-center self-center rounded-[5px] text-gray-500 transition-colors hover:bg-gray-100 hover:text-ink group-focus-within:grid group-hover:grid"
+                >
+                  <X className="h-3 w-3" aria-hidden />
+                </button>
+              </span>
+            ))}
+
+            <div className="relative min-w-[12rem] flex-1">
+              {isEmpty && (
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-y-0 left-0 flex items-center whitespace-pre text-[18px] text-gray-500"
+                >
+                  {placeholder}
+                  {!staticPlaceholder && (
+                    <span className="ml-px inline-block w-px animate-caret self-stretch bg-gray-500" />
+                  )}
+                </span>
+              )}
+              <textarea
+                ref={inputRef}
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    submit();
+                  }
+                  const last = picked[picked.length - 1];
+                  if (e.key === "Backspace" && value === "" && last) {
+                    e.preventDefault();
+                    removeDestination(last);
+                  }
+                }}
+                rows={1}
+                aria-label="Describe your trip"
+                className="w-full resize-none bg-transparent text-[18px] leading-7 outline-none focus-visible:!shadow-none"
+              />
+            </div>
+          </div>
+
+          {/* Controls */}
+          <div className="mt-3 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <DurationStepper value={days} onChange={setDays} />
+              {!isHero && (
+                <button
+                  type="button"
+                  onClick={() => setRailOpen((v) => !v)}
+                  aria-expanded={railOpen}
+                  aria-label="Toggle destinations"
+                  className={cn(
+                    "inline-flex items-center gap-1.5 rounded-[12px] px-2.5 py-2 text-xs transition-colors",
+                    railOpen
+                      ? "bg-gray-100 text-ink"
+                      : "text-gray-500 hover:bg-gray-50 hover:text-ink"
+                  )}
+                >
+                  <MapPin className="h-3.5 w-3.5" aria-hidden />
+                  Destinations
+                </button>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={submit}
+              disabled={!canSubmit}
+              aria-label="Send"
+              className={cn(
+                "grid h-9 w-9 place-items-center rounded-[12px] transition-all",
+                canSubmit
+                  ? "bg-ink text-white hover:opacity-85"
+                  : "bg-gray-100 text-gray-500"
+              )}
+            >
+              <ArrowUp className="h-4 w-4" aria-hidden />
+            </button>
+          </div>
+        </div>
+
+        {/* Destination picker — a slow rail that halts under the cursor. */}
+        {railOpen && (
+          <div className="flex items-center gap-2 py-2.5 pl-3">
+            <span className="shrink-0 text-xs text-gray-500">
+              Add destinations
+            </span>
+            <div className="marquee flex-1">
+              <div
+                className="marquee-track !gap-2"
+                style={{ animationDuration: "60s" }}
+              >
+                {[0, 1].map((copy) => (
+                  <div key={copy} className="flex items-center gap-2">
+                    {available.map((name) => (
+                      <button
+                        key={`${copy}-${name}`}
+                        type="button"
+                        tabIndex={copy === 1 ? -1 : undefined}
+                        aria-hidden={copy === 1}
+                        onClick={() => addDestination(name)}
+                        className={cn(
+                          "whitespace-nowrap rounded-[8px] bg-white/70 px-2.5 py-1 text-xs text-gray-500 shadow-soft transition-colors hover:bg-white hover:text-ink",
+                          leaving === name && "animate-chip-out"
+                        )}
+                      >
+                        {name}
+                      </button>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
