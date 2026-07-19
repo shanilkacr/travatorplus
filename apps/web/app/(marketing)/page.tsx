@@ -283,7 +283,7 @@ export default function HomePage() {
               <Sun className="h-3.5 w-3.5" aria-hidden />
               AI travel concierge · Sri Lanka
             </span>
-            <h1 className="mx-auto mt-6 max-w-3xl text-4xl leading-[1.04] tracking-tightest text-white md:text-6xl">
+            <h1 className="mx-auto mt-6 text-4xl leading-[1.04] tracking-tightest text-white md:text-6xl">
               Your Sri Lanka trip, planned in one conversation
             </h1>
             <p className="mx-auto mt-5 max-w-xl text-base text-white/85 md:text-lg">
