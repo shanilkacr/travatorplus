@@ -9,91 +9,120 @@ export interface SriLankaImageMeta {
 const unsplash = (id: string, w = 960) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=75`;
 
-/** Curated Unsplash photography — verified HTTP 200, hotlinked via next/image. */
+/**
+ * Curated Sri Lanka photography.
+ *
+ * House rule: every image here must actually depict Sri Lanka, and the alt text
+ * must describe what is genuinely in the frame. Each ID below was opened and
+ * inspected before being added — never add one on the strength of a search
+ * result's caption alone. (An earlier set drifted into a Taj Mahal shot, African
+ * elephants and stock Caribbean beaches, all under Sri Lankan alt text.)
+ */
 export const SRI_LANKA_IMAGES = {
   hero: {
-    id: "hero-sigiriya",
+    id: "sigiriya-aerial",
     src: unsplash("photo-1711797750174-c3750dd9d7c9", 1280),
-    alt: "Aerial view of Sigiriya rock fortress rising from the jungle",
-    credit: "Unsplash / sander traa",
+    alt: "Aerial view of Sigiriya rock fortress rising from surrounding jungle at dawn",
+    credit: "Unsplash",
+    region: "Sigiriya",
+  },
+  sigiriyaLake: {
+    id: "sigiriya-lake",
+    src: unsplash("photo-1756670164617-76aeb86e6091"),
+    alt: "Sigiriya rock seen across a lake and grassland under cloud",
+    credit: "Unsplash",
+    region: "Sigiriya",
+  },
+  sigiriyaSunset: {
+    id: "sigiriya-sunset",
+    src: unsplash("photo-1751247026229-518bfec9b5e6"),
+    alt: "Sigiriya rock on the horizon at sunset, seen from the surrounding hills",
+    credit: "Unsplash",
+    region: "Sigiriya",
+  },
+  sigiriyaSummit: {
+    id: "sigiriya-summit",
+    src: unsplash("photo-1711389552655-9230667c6338"),
+    alt: "Ruined terraces on the summit of Sigiriya above the forest canopy",
+    credit: "Unsplash",
     region: "Sigiriya",
   },
   ellaTrain: {
-    id: "ella-train",
-    src: unsplash("photo-1548013146-72479768bada"),
-    alt: "Train crossing a stone viaduct through tropical forest",
+    id: "nine-arch-bridge",
+    src: unsplash("photo-1578519050142-afb511e518de"),
+    alt: "Red train crossing the Nine Arch Bridge above tea slopes at Ella",
     credit: "Unsplash",
     region: "Ella",
   },
-  southCoast: {
-    id: "south-coast",
-    src: unsplash("photo-1559827260-dc66d52bef19"),
-    alt: "Palm-fringed beach on Sri Lanka's south coast",
+  nineArch: {
+    id: "nine-arch-bridge-alt",
+    src: unsplash("photo-1578519050142-afb511e518de"),
+    alt: "Red train crossing the Nine Arch Bridge above tea slopes at Ella",
     credit: "Unsplash",
-    region: "Mirissa",
+    region: "Ella",
+  },
+  teaPicker: {
+    id: "tea-plantation",
+    src: unsplash("photo-1713015702343-b91707c04bc7"),
+    alt: "Pickers working terraced tea slopes in Sri Lanka's hill country",
+    credit: "Unsplash",
+    region: "Nuwara Eliya",
   },
   kandy: {
-    id: "kandy",
-    src: unsplash("photo-1711389552655-9230667c6338"),
-    alt: "Cliff-top fortress surrounded by lush vegetation",
-    credit: "Unsplash / sander traa",
+    id: "kandy-temple",
+    src: unsplash("photo-1665849050332-8d5d7e59afb6"),
+    alt: "The Temple of the Sacred Tooth Relic in Kandy",
+    credit: "Unsplash",
     region: "Kandy",
   },
   galle: {
-    id: "galle",
-    src: unsplash("photo-1756670164617-76aeb86e6091"),
-    alt: "Sigiriya rock formation above green hills and water",
+    id: "galle-lighthouse",
+    src: unsplash("photo-1704797390325-b057758d8c3d"),
+    alt: "Galle Fort lighthouse behind palms, with a tuk-tuk on the rampart road",
     credit: "Unsplash",
     region: "Galle",
   },
+  southCoast: {
+    id: "mirissa-coast",
+    src: unsplash("photo-1734279135115-6d8984e08206"),
+    alt: "Aerial view of the palm-covered headland and bays of Sri Lanka's south coast",
+    credit: "Unsplash",
+    region: "Mirissa",
+  },
+  stiltFishermen: {
+    id: "stilt-fishing",
+    src: unsplash("photo-1643793416018-3eb27ecc1628"),
+    alt: "Stilt-fishing poles standing in the surf on Sri Lanka's south coast",
+    credit: "Unsplash",
+    region: "Weligama",
+  },
   wildlife: {
-    id: "wildlife",
-    src: unsplash("photo-1564760055775-d63b17a55c44"),
-    alt: "Elephants in a Sri Lankan national park",
+    id: "sri-lankan-elephants",
+    src: unsplash("photo-1705936981588-a4192f66fcfb"),
+    alt: "Sri Lankan elephants wading through a shallow tank in a national park",
     credit: "Unsplash",
     region: "Yala",
   },
   colombo: {
-    id: "colombo",
-    src: unsplash("photo-1751247026229-518bfec9b5e6"),
-    alt: "Sunset light on Sigiriya rock near the cultural triangle",
-    credit: "Unsplash / Anil Reddy",
+    id: "colombo-city",
+    src: unsplash("photo-1740812517495-812e90ca01b1"),
+    alt: "Colombo rooftops and high-rises looking out to the Indian Ocean",
+    credit: "Unsplash",
     region: "Colombo",
   },
-  stiltFishermen: {
-    id: "stilt-fishermen",
-    src: unsplash("photo-1507525428034-b723cf961d3e"),
-    alt: "Calm turquoise waters along the tropical coast",
-    credit: "Unsplash",
-    region: "Weligama",
-  },
-  teaPicker: {
-    id: "tea-picker",
-    src: unsplash("photo-1578662996442-48f60103fc96"),
-    alt: "Tea country landscape in Sri Lanka's hill region",
-    credit: "Unsplash",
-    region: "Nuwara Eliya",
-  },
-  nineArch: {
-    id: "nine-arch",
-    src: unsplash("photo-1548013146-72479768bada"),
-    alt: "Historic railway viaduct through the highlands",
-    credit: "Unsplash",
-    region: "Ella",
-  },
   lagoon: {
-    id: "lagoon",
-    src: unsplash("photo-1507525428034-b723cf961d3e"),
-    alt: "Turquoise lagoon and calm tropical waters",
+    id: "east-coast-boats",
+    src: unsplash("photo-1552055568-f8c4fb8c6320"),
+    alt: "Fishing boats drawn up on a wide Sri Lankan beach, seen from above",
     credit: "Unsplash",
     region: "East Coast",
   },
   temple: {
-    id: "temple",
-    src: unsplash("photo-1751247026229-518bfec9b5e6"),
-    alt: "Golden sunset over ancient rock fortress landscape",
-    credit: "Unsplash / Anil Reddy",
-    region: "Anuradhapura",
+    id: "kandy-temple-alt",
+    src: unsplash("photo-1665849050332-8d5d7e59afb6"),
+    alt: "The Temple of the Sacred Tooth Relic in Kandy",
+    credit: "Unsplash",
+    region: "Kandy",
   },
 } as const satisfies Record<string, SriLankaImageMeta>;
 

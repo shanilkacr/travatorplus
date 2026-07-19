@@ -83,7 +83,7 @@ export function SiteFooter() {
         </div>
         {COLS.map((col) => (
           <div key={col.title}>
-            <p className="mb-4 text-xs uppercase tracking-widest text-white/40">
+            <p className="mb-4 text-xs text-white/40">
               {col.title}
             </p>
             <ul className="space-y-3">
@@ -106,9 +106,7 @@ export function SiteFooter() {
       <div className="border-t border-white/10">
         <div className="container-editorial flex flex-col items-start justify-between gap-2 py-6 text-xs text-white/40 md:flex-row md:items-center">
           <span>© {new Date().getFullYear()} Travator. All rights reserved.</span>
-          <span className="uppercase tracking-widest">
-            Colombo · Kandy · Ella · Galle
-          </span>
+          <span>Colombo · Kandy · Ella · Galle</span>
         </div>
       </div>
     </footer>

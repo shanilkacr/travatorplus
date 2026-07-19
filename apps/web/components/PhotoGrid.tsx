@@ -25,7 +25,7 @@ export function PhotoGrid({ cards }: { cards: Card[] }) {
           <div className="absolute inset-0 rounded-4xl bg-gradient-to-t from-black/50 via-transparent to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-4">
             {card.region && (
-              <p className="text-xs uppercase tracking-widest text-white/80">
+              <p className="text-xs text-white/80">
                 {card.region}
               </p>
             )}

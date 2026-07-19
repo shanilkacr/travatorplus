@@ -52,7 +52,7 @@ export function TravelPlanner() {
             { Icon: Car, label: "Transport", value: "Private driver" },
           ].map(({ Icon, label, value }) => (
             <div key={label} className="rounded-[12px] bg-gray-50 px-3 py-2.5">
-              <dt className="flex items-center gap-1.5 text-[0.7rem] uppercase tracking-widest text-gray-500">
+              <dt className="flex items-center gap-1.5 text-[0.7rem] text-gray-500">
                 <Icon className="h-3 w-3" aria-hidden />
                 {label}
               </dt>

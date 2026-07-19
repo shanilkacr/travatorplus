@@ -63,11 +63,11 @@ export default async function BlogPostPage({
           <FadeIn>
             <Link
               href="/blog"
-              className="text-xs uppercase tracking-widest text-gray-500 transition-colors hover:text-ink"
+              className="text-xs text-gray-500 transition-colors hover:text-ink"
             >
               ← All posts
             </Link>
-            <div className="mt-8 flex items-center gap-3 text-xs uppercase tracking-widest text-gray-500">
+            <div className="mt-8 flex items-center gap-3 text-xs text-gray-500">
               <time dateTime={meta.date}>{formatDate(meta.date)}</time>
               <span aria-hidden>·</span>
               <span>{meta.readingTime}</span>

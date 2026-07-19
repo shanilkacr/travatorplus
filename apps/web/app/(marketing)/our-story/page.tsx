@@ -125,7 +125,7 @@ export default function OurStoryPage() {
                     />
                   </div>
                   <p className="mt-3 text-sm text-ink">Name Surname</p>
-                  <p className="text-xs uppercase tracking-widest text-gray-500">
+                  <p className="text-xs text-gray-500">
                     {role}
                   </p>
                 </div>

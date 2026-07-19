@@ -268,7 +268,7 @@ export default function HomePage() {
           />
           <div className="container-editorial relative z-10 pb-16 pt-32 text-center md:pt-36">
           <FadeIn>
-            <span className="inline-flex items-center gap-2 rounded-[12px] bg-white/20 px-4 py-2 text-xs uppercase tracking-widest text-white backdrop-blur-md">
+            <span className="inline-flex items-center gap-2 rounded-[12px] bg-white/20 px-4 py-2 text-xs text-white backdrop-blur-md">
               <Sun className="h-3.5 w-3.5" aria-hidden />
               AI travel concierge · Sri Lanka
             </span>
