@@ -81,9 +81,9 @@ export function SiteFooter() {
             Destination management for inbound Sri Lanka. Planned by AI, run by
             people who know the roads.
           </p>
-          <p className="mt-4 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-white/60">
+          <p className="mt-4 flex flex-wrap items-center gap-x-1 gap-y-1 text-sm text-white/60">
             <span>Developed by</span>
-            <TezzeractWordmark className="h-[0.7em]" />
+            <TezzeractWordmark className="h-[0.77em]" />
             <span>Teams</span>
           </p>
           <address className="mt-4 max-w-xs not-italic text-sm leading-relaxed text-white/50">
@@ -132,7 +132,7 @@ export function SiteFooter() {
         <div className="container-editorial flex flex-col items-start justify-between gap-2 py-6 text-xs text-white/40 md:flex-row md:items-center">
           <span>
             © {new Date().getFullYear()} Travator, a product of{" "}
-            <TezzeractWordmark className="h-[0.665em]" /> (Pvt) Ltd. All
+            <TezzeractWordmark className="h-[0.732em]" /> (Pvt) Ltd. All
             rights reserved.
           </span>
           <span>Colombo · Kandy · Ella · Galle</span>

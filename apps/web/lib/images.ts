@@ -117,6 +117,27 @@ export const SRI_LANKA_IMAGES = {
     credit: "Unsplash",
     region: "East Coast",
   },
+  surf: {
+    id: "surf-beach",
+    src: unsplash("photo-1503384861219-7f20f2f111cc"),
+    alt: "Surfers walking a palm-lined Sri Lankan beach at dusk with boards under their arms",
+    credit: "Unsplash",
+    region: "Arugam Bay",
+  },
+  food: {
+    id: "rice-and-curry",
+    src: unsplash("photo-1742281095650-dd3c50c08772"),
+    alt: "A Sri Lankan rice and curry spread served on a lotus leaf",
+    credit: "Unsplash",
+    region: "Sri Lanka",
+  },
+  paddy: {
+    id: "paddy-field",
+    src: unsplash("photo-1752426614042-903c03929e66"),
+    alt: "Green paddy fields with a footpath running through them under a tree",
+    credit: "Unsplash",
+    region: "Rural Sri Lanka",
+  },
   temple: {
     id: "kandy-temple-alt",
     src: unsplash("photo-1665849050332-8d5d7e59afb6"),
@@ -133,6 +154,16 @@ export const BLOG_IMAGES: Record<string, ImageKey> = {
   "driving-times-that-actually-matter": "kandy",
   "one-week-first-timer": "ellaTrain",
   "southwest-vs-east-coast": "southCoast",
+  "no-off-season-in-sri-lanka": "surf",
+  "rain-in-sri-lanka-plan-around-it": "sigiriyaLake",
+  "beyond-the-standard-tourist-loop": "sigiriyaSunset",
+  "go-rural-sri-lanka": "paddy",
+  "sri-lankan-food-guide": "food",
+  "expressway-buses-sri-lanka": "colombo",
+  "how-to-get-around-sri-lanka": "galle",
+  "rent-a-vehicle-or-public-transport": "stiltFishermen",
+  "renting-a-vehicle-in-sri-lanka": "lagoon",
+  "is-sri-lanka-getting-too-touristy": "teaPicker",
 };
 
 export function getBlogImage(slug: string): SriLankaImageMeta {
