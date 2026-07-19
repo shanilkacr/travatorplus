@@ -19,6 +19,7 @@ import {
 import { Wordmark } from "@/components/Wordmark";
 import { TripComposer } from "@/components/composer/TripComposer";
 import { TravelPlanner } from "@/components/chat/TravelPlanner";
+import { AssistantMessage } from "@/components/chat/AssistantMessage";
 import {
   BuddiesPanel,
   BudgetPanel,
@@ -31,8 +32,16 @@ import { getSamplePlanPreset } from "@/lib/sample-plans";
 import { DEMO_DAYS, DEMO_LINE_ITEMS, DEMO_TRIP } from "@/lib/demo-trip";
 import { cn } from "@/lib/utils";
 
-const DEFAULT_ASSISTANT_REPLY =
-  "Good shape for a week. I've drafted a route that keeps the driving sensible — two nights at Sigiriya so you get a dawn climb without a rushed morning, then Kandy, the hill-country train down to Ella, and a soft landing on the south coast. The planner on the right has the day-by-day and a running cost. Tell me what to change.";
+const DEFAULT_ASSISTANT_REPLY = `Good shape for a week. I've drafted a route that keeps the driving sensible — two nights at Sigiriya so you get a dawn climb without a rushed morning, then Kandy, the hill-country train down to Ella, and a soft landing on the south coast.
+
+## The route
+
+- **Sigiriya** — two nights, dawn climb at the rock
+- **Kandy** — temple of the tooth, spice garden
+- **Ella** — hill-country train, Nine Arch Bridge
+- **South coast** — a soft landing to finish
+
+The planner on the right has the day-by-day and a running cost. Tell me what to change.`;
 
 type RailKey = "profile" | "buddies" | "explore" | "map" | "budget" | "settings";
 
@@ -100,7 +109,7 @@ export function ChatWorkspace({
       {
         id: `a${cur.length + 1}`,
         role: "assistant",
-        text: "Noted — I've updated the planner. (The live agent loop lands in the next milestone; this is the interface it will drive.)",
+        text: "Noted — I've updated the planner.\n\n**Changes applied** to the itinerary on the right. (The live agent loop lands in the next milestone; this is the interface it will drive.)",
       },
     ]);
   }
@@ -175,7 +184,7 @@ export function ChatWorkspace({
       )}
 
       {/* ── Chat ──────────────────────────────────────────── */}
-      <main className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-[20px] bg-white shadow-soft">
+      <main className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-soft-xs">
         <header className="flex h-14 shrink-0 items-center justify-between px-4">
           <Link
             href="/"
@@ -204,7 +213,7 @@ export function ChatWorkspace({
 
         {/* Thread */}
         <div className="flex-1 overflow-y-auto px-4 py-6 md:px-8">
-          <div className="mx-auto max-w-2xl space-y-6">
+          <div className="mx-auto max-w-2xl space-y-8">
             {messages.length === 0 && (
               <div className="py-20 text-center">
                 <Sparkles className="mx-auto h-5 w-5 text-gray-300" aria-hidden />
@@ -223,34 +232,25 @@ export function ChatWorkspace({
                   </p>
                 </div>
               ) : (
-                <div key={m.id} className="flex gap-3">
-                  {/* Message actions, as a floating column beside the reply. */}
-                  <div className="flex shrink-0 flex-col items-center gap-1 pt-1">
-                    <span className="grid h-7 w-7 place-items-center rounded-[10px] bg-gray-50">
-                      <Sparkles className="h-3.5 w-3.5 text-ink" aria-hidden />
-                    </span>
-                    <div className="mt-1 flex flex-col gap-0.5 rounded-[10px] bg-white p-0.5 shadow-soft">
-                      {[
-                        { Icon: Copy, label: "Copy" },
-                        { Icon: ThumbsUp, label: "Good reply" },
-                        { Icon: ThumbsDown, label: "Bad reply" },
-                      ].map(({ Icon, label }) => (
-                        <button
-                          key={label}
-                          type="button"
-                          aria-label={label}
-                          className="grid h-6 w-6 place-items-center rounded-[7px] text-gray-500 transition-colors hover:bg-gray-50 hover:text-ink"
-                        >
-                          <Icon className="h-3 w-3" aria-hidden />
-                        </button>
-                      ))}
-                    </div>
+                <article key={m.id} className="animate-fade-up">
+                  <AssistantMessage content={m.text} />
+                  <div className="mt-4 flex items-center gap-0.5">
+                    {[
+                      { Icon: Copy, label: "Copy" },
+                      { Icon: ThumbsUp, label: "Good reply" },
+                      { Icon: ThumbsDown, label: "Bad reply" },
+                    ].map(({ Icon, label }) => (
+                      <button
+                        key={label}
+                        type="button"
+                        aria-label={label}
+                        className="grid h-7 w-7 place-items-center rounded-[8px] text-gray-500 transition-colors hover:bg-gray-50 hover:text-ink"
+                      >
+                        <Icon className="h-3.5 w-3.5" aria-hidden />
+                      </button>
+                    ))}
                   </div>
-
-                  <div className="min-w-0 flex-1 animate-fade-up rounded-[18px] bg-white px-4 py-3 shadow-soft">
-                    <p className="text-sm leading-relaxed text-ink">{m.text}</p>
-                  </div>
-                </div>
+                </article>
               )
             )}
           </div>

@@ -64,6 +64,13 @@ export function TripComposer({
   const [railOpen, setRailOpen] = useState(variant === "hero");
 
   const isHero = variant === "hero";
+  const inputText = isHero ? "text-[18px] leading-7" : "text-[16px] leading-6";
+  const inputRow = isHero
+    ? "flex flex-wrap items-baseline gap-x-2 gap-y-1"
+    : "flex flex-nowrap items-center gap-x-1";
+  const tagClass = isHero
+    ? "group inline-flex animate-chip-in items-baseline whitespace-nowrap text-ink underline decoration-brand decoration-2 underline-offset-4"
+    : "group inline animate-chip-in m-0 p-0 whitespace-nowrap text-ink underline decoration-brand decoration-2 underline-offset-[3px]";
   const isEmpty = value.trim() === "" && picked.length === 0;
   const typed = useTypewriter(placeholderExamples, {
     paused: !isEmpty || Boolean(staticPlaceholder),
@@ -111,12 +118,9 @@ export function TripComposer({
           className="cursor-text rounded-[20px] bg-white px-4 pb-3 pt-4 shadow-soft"
         >
           {/* Destinations sit in the text flow as words, not chips. */}
-          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+          <div className={inputRow}>
             {picked.map((name) => (
-              <span
-                key={name}
-                className="group inline-flex animate-chip-in items-baseline whitespace-nowrap text-[18px] leading-7 text-ink underline decoration-brand decoration-2 underline-offset-4"
-              >
+              <span key={name} className={cn(tagClass, inputText)}>
                 {name}
                 <button
                   type="button"
@@ -126,18 +130,29 @@ export function TripComposer({
                   }}
                   aria-label={`Remove ${name}`}
                   /* `hidden` (not opacity) so no space is reserved when idle. */
-                  className="ml-1 hidden h-4 w-4 shrink-0 place-items-center self-center rounded-[5px] text-gray-500 transition-colors hover:bg-gray-100 hover:text-ink group-focus-within:grid group-hover:grid"
+                  className={cn(
+                    "hidden shrink-0 place-items-center rounded-[5px] text-gray-500 transition-colors hover:bg-gray-100 hover:text-ink group-focus-within:grid group-hover:grid",
+                    isHero ? "ml-1 h-4 w-4 self-center" : "ml-0.5 h-3.5 w-3.5 align-middle"
+                  )}
                 >
-                  <X className="h-3 w-3" aria-hidden />
+                  <X className={isHero ? "h-3 w-3" : "h-2.5 w-2.5"} aria-hidden />
                 </button>
               </span>
             ))}
 
-            <div className="relative min-w-[12rem] flex-1">
+            <div
+              className={cn(
+                "relative min-w-[12rem] flex-1",
+                !isHero && "min-h-6 leading-6"
+              )}
+            >
               {isEmpty && (
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute inset-y-0 left-0 flex items-center whitespace-pre text-[18px] text-gray-500"
+                  className={cn(
+                    "pointer-events-none absolute inset-y-0 left-0 flex items-center whitespace-pre text-gray-500",
+                    inputText
+                  )}
                 >
                   {placeholder}
                   {!staticPlaceholder && (
@@ -162,7 +177,11 @@ export function TripComposer({
                 }}
                 rows={1}
                 aria-label="Describe your trip"
-                className="w-full resize-none bg-transparent text-[18px] leading-7 outline-none focus-visible:!shadow-none"
+                className={cn(
+                  "w-full resize-none bg-transparent outline-none focus-visible:!shadow-none",
+                  inputText,
+                  !isHero && "m-0 p-0"
+                )}
               />
             </div>
           </div>

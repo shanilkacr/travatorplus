@@ -94,6 +94,7 @@ const config: Config = {
         "glass-lg": "0 8px 40px rgba(10, 10, 10, 0.1), 0 2px 8px rgba(10, 10, 10, 0.05)",
         "glass-inset": "inset 0 1px 0 rgba(255, 255, 255, 0.6)",
         soft: "0 2px 12px rgba(10, 10, 10, 0.05)",
+        "soft-xs": "0 1px 4px rgba(10, 10, 10, 0.025)",
       },
       backgroundImage: {
         "frost-gradient":
