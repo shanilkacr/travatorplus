@@ -34,7 +34,10 @@ export function SiteNav() {
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 px-4 pt-6 md:px-6 md:pt-8">
+    /* 20px from the viewport top: 10px clears the hero card's edge, then a
+       further 10px sits between the card edge and the nav. Horizontal padding
+       matches so the nav is inset 10px inside the card on narrow screens. */
+    <header className="sticky top-0 z-50 px-[20px] pt-[20px]">
       <nav
         className={cn(
           "mx-auto flex h-14 max-w-6xl items-center justify-between rounded-[16px] px-5 transition-all duration-300 md:px-7",

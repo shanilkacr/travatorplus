@@ -250,10 +250,14 @@ const FAQS = [
 export default function HomePage() {
   return (
     <>
-      {/* Hero — inset card with an equal margin on all four sides. The nav is
-          pulled over it via -mt so it floats inside the card. */}
-      <section className="-mt-[4.5rem] p-3 md:p-4">
-        <div className="relative flex min-h-[calc(100svh-1.5rem)] flex-col justify-center overflow-hidden rounded-[32px] md:min-h-[calc(100svh-2rem)]">
+      {/* Hero — inset card with a 10px margin on all four sides.
+          The header block is its 20px top pad plus the 3.5rem nav (note rem is
+          14px here, so that's 49px, not 56px). Pulling the section up by
+          exactly that puts the card's top edge at 10px and leaves a matching
+          10px gap between the card edge and the nav. The card is 100svh − 20px
+          tall, so it sits centred with 10px above and below. */}
+      <section className="-mt-[calc(20px+3.5rem)] p-[10px]">
+        <div className="relative flex min-h-[calc(100svh-20px)] flex-col justify-center overflow-hidden rounded-[32px]">
           <Image
             src="/images/hero-sunset.jpg"
             alt="Sunset over a rocky Sri Lankan beach with leaning coconut palms"
@@ -266,7 +270,9 @@ export default function HomePage() {
             aria-hidden
             className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/10 to-black/45"
           />
-          <div className="container-editorial relative z-10 pb-16 pt-32 text-center md:pt-36">
+          {/* Symmetric padding so justify-center leaves the content optically
+              centred in the card; the nav floats over the top 76px. */}
+          <div className="container-editorial relative z-10 py-20 text-center">
           <FadeIn>
             <span className="inline-flex items-center gap-2 rounded-[12px] bg-white/20 px-4 py-2 text-xs text-white backdrop-blur-md">
               <Sun className="h-3.5 w-3.5" aria-hidden />
@@ -307,29 +313,48 @@ export default function HomePage() {
         />
       </section>
 
-      {/* 3 steps */}
-      <section className="container-editorial py-20 md:py-28">
-        <FadeIn className="mx-auto max-w-2xl text-center">
-          <p className="eyebrow mb-4">How it works</p>
-          <h2 className="text-3xl md:text-4xl">
-            From "we should go" to booked — in three steps
-          </h2>
-        </FadeIn>
-        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-3">
-          {STEPS.map((s, i) => (
-            <FadeIn key={s.n} delay={i * 80}>
-              <div className="h-full rounded-[24px] bg-white p-8 shadow-glass">
-                <div className="flex items-center justify-between">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-gray-50 shadow-soft">
-                    <s.Icon className="h-5 w-5 text-ink" aria-hidden />
-                  </span>
-                  <span className="font-headline text-3xl text-gray-300">{s.n}</span>
-                </div>
-                <h3 className="mt-6 text-xl">{s.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-gray-500">{s.body}</p>
-              </div>
+      {/* How it works — full-width split with background image */}
+      <section className="px-[10px] py-20 md:py-28">
+        <div className="relative overflow-hidden rounded-[32px]">
+          <Image
+            src="/images/how-it-works-sigiriya.jpg"
+            alt="Aerial view of Sigiriya rock fortress rising from surrounding jungle"
+            fill
+            className="object-cover"
+            sizes="100vw"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/55 to-black/40"
+          />
+          <div className="relative z-10 grid grid-cols-1 items-center gap-10 p-8 md:grid-cols-2 md:gap-12 md:p-12 lg:gap-16 lg:p-16">
+            <FadeIn>
+              <p className="mb-4 text-xs text-white/70">How it works</p>
+              <h2 className="text-3xl text-white md:text-4xl lg:text-[2.75rem] lg:leading-[1.1]">
+                From "we should go" to booked — in three steps
+              </h2>
             </FadeIn>
-          ))}
+            <div className="flex flex-col gap-4">
+              {STEPS.map((s, i) => (
+                <FadeIn key={s.n} delay={i * 80}>
+                  <div className="flex items-start gap-4 rounded-[20px] bg-white/92 p-5 shadow-glass backdrop-blur-md md:gap-5 md:p-6">
+                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] bg-gray-50 shadow-soft">
+                      <s.Icon className="h-5 w-5 text-ink" aria-hidden />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-3">
+                        <h3 className="text-lg md:text-xl">{s.title}</h3>
+                        <span className="font-headline shrink-0 text-2xl text-gray-300">
+                          {s.n}
+                        </span>
+                      </div>
+                      <p className="mt-2 text-sm leading-relaxed text-gray-500">{s.body}</p>
+                    </div>
+                  </div>
+                </FadeIn>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
