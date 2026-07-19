@@ -118,7 +118,8 @@ export function TripComposer({
         <div
           onClick={() => inputRef.current?.focus()}
           className={cn(
-            "cursor-text rounded-[12px] bg-white px-4 pb-3 pt-4 md:rounded-[20px]",
+            "cursor-text bg-white px-4 pb-3 pt-4",
+            isHero ? "rounded-[12px] md:rounded-[20px]" : "rounded-[12px] xl:rounded-[20px]",
             isHero ? "shadow-soft" : "shadow-soft-chat-input"
           )}
         >
