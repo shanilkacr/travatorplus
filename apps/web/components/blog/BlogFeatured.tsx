@@ -17,7 +17,7 @@ export function BlogFeatured({ post }: { post: PostMeta }) {
           fill
           rounded="none"
           className="rounded-none transition-transform duration-700 group-hover:scale-[1.03]"
-          sizes="(max-width:1024px) 100vw, 1008px"
+          sizes="(max-width:1024px) 100vw, 80vw"
           priority
         />
       </div>

@@ -434,9 +434,14 @@ body {
     box-shadow: 0 0 0 3px rgba(10, 10, 10, 0.08), 0 4px 16px rgba(10, 10, 10, 0.06);
   }
 
-  /* Boxed reading column — used by the blog, Our Story and the footer. */
+  /* Boxed reading column — Our Story, privacy, book-a-call, and the footer. */
   .container-editorial {
     @apply mx-auto w-full max-w-6xl px-6 md:px-10;
+  }
+
+  /* Blog index and article pages — full-bleed feel with 80% viewport width. */
+  .container-blog {
+    @apply mx-auto w-[80%] max-w-none;
   }
 
   /*

@@ -17,7 +17,7 @@ export default function BlogIndexPage() {
     <>
       {/* Featured lead */}
       {featured && (
-        <section className="container-editorial pt-10 md:pt-12">
+        <section className="container-blog pt-10 md:pt-12">
           <FadeIn>
             <BlogFeatured post={featured} />
           </FadeIn>
@@ -25,7 +25,7 @@ export default function BlogIndexPage() {
       )}
 
       {/* Search, filters, and the grid */}
-      <section className="container-editorial pb-28 pt-14 md:pt-20">
+      <section className="container-blog pb-28 pt-14 md:pt-20">
         <FadeIn delay={80}>
           <BlogExplorer posts={rest} />
         </FadeIn>

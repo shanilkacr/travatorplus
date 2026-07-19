@@ -59,7 +59,7 @@ export default function PrivacyPolicyPage() {
                 <strong>Travator</strong> is a travel planning product operated
                 by{" "}
                 <strong>
-                  <TezzeractWordmark className="h-[1em]" /> (Pvt) Ltd
+                  <TezzeractWordmark className="h-[0.7em]" /> (Pvt) Ltd
                 </strong>{" "}
                 (&ldquo;Travator&rdquo;,
                 &ldquo;we&rdquo;, &ldquo;us&rdquo;, or &ldquo;our&rdquo;).
@@ -74,7 +74,7 @@ export default function PrivacyPolicyPage() {
               </p>
               <p>
                 For the purposes of GDPR,{" "}
-                <TezzeractWordmark className="h-[1em]" /> (Pvt) Ltd is the{" "}
+                <TezzeractWordmark className="h-[0.7em]" /> (Pvt) Ltd is the{" "}
                 <strong>data controller</strong> for personal data processed
                 through travator.com and our related services.
               </p>
@@ -578,7 +578,7 @@ export default function PrivacyPolicyPage() {
                 Questions or requests about this policy or your data:
               </p>
               <p>
-                <TezzeractWordmark className="h-[1em]" /> (Pvt) Ltd — Travator
+                <TezzeractWordmark className="h-[0.7em]" /> (Pvt) Ltd — Travator
                 <br />
                 Level 9, Orion Towers
                 <br />

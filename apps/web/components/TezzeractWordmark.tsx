@@ -1,30 +1,45 @@
-import Image from "next/image";
 import { cn } from "@/lib/utils";
+
+/** Aspect ratio of the Tezzeract wordmark asset (880 × 110). */
+export const TEZZERACT_LOGO_ASPECT = 880 / 110;
 
 interface TezzeractWordmarkProps {
   /** Scale to match surrounding text — defaults to one em tall. */
   className?: string;
-  /** Lighten the mark for dark backgrounds (e.g. footer). */
+  /**
+   * @deprecated Colour now follows `currentColor`. Pass `text-*` on className
+   * or rely on inherited foreground colour instead.
+   */
   inverted?: boolean;
 }
 
-/** Inline Tezzeract wordmark — replaces the word in running copy. */
+/**
+ * Inline Tezzeract wordmark (tesseract icon + TEZZERACT).
+ * Masked SVG asset tinted with currentColor — works on light and dark surfaces.
+ */
 export function TezzeractWordmark({
   className,
-  inverted = false,
+  inverted: _inverted = false,
 }: TezzeractWordmarkProps) {
   return (
-    <Image
-      src="/brand/tezzeract-logo.png"
-      alt="Tezzeract"
-      width={640}
-      height={120}
+    <span
+      role="img"
+      aria-label="Tezzeract"
       className={cn(
-        "inline-block h-[0.92em] w-auto align-[-0.12em]",
-        inverted && "brightness-0 invert",
+        "inline-block h-[0.644em] align-[-0.12em] bg-current",
         className
       )}
-      sizes="120px"
+      style={{
+        aspectRatio: `${880} / ${110}`,
+        WebkitMaskImage: "url(/brand/tezzeract-logo.png)",
+        maskImage: "url(/brand/tezzeract-logo.png)",
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskPosition: "center",
+        maskPosition: "center",
+      }}
     />
   );
 }

@@ -1,4 +1,10 @@
 import type { MDXComponents } from "mdx/types";
+import { headingText, slugifyHeading } from "@/lib/slugify";
+
+/** Anchor id derived from the heading's own text, matching getPostHeadings. */
+function headingId(children: React.ReactNode) {
+  return slugifyHeading(headingText(children));
+}
 
 /**
  * Monochrome MDX styling for blog posts. App Router picks this up automatically
@@ -7,8 +13,25 @@ import type { MDXComponents } from "mdx/types";
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
     h1: (props) => <h1 className="mt-12 text-3xl md:text-4xl" {...props} />,
-    h2: (props) => <h2 className="mt-12 text-2xl" {...props} />,
-    h3: (props) => <h3 className="mt-8 text-xl" {...props} />,
+    // scroll-mt clears the sticky header when jumping from the contents list.
+    h2: ({ children, ...props }) => (
+      <h2
+        id={headingId(children)}
+        className="mt-12 scroll-mt-28 text-2xl"
+        {...props}
+      >
+        {children}
+      </h2>
+    ),
+    h3: ({ children, ...props }) => (
+      <h3
+        id={headingId(children)}
+        className="mt-8 scroll-mt-28 text-xl"
+        {...props}
+      >
+        {children}
+      </h3>
+    ),
     p: (props) => (
       <p className="mt-5 text-base leading-relaxed text-gray-500" {...props} />
     ),

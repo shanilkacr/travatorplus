@@ -104,7 +104,7 @@ export default function OurStoryPage() {
             <FadeIn delay={160}>
               <p>
                 Travator is a product of{" "}
-                <TezzeractWordmark className="h-[1em]" /> (Pvt) Ltd — a Sri
+                <TezzeractWordmark className="h-[0.7em]" /> (Pvt) Ltd — a Sri
                 Lanka–based tech company with a product-first, solution-oriented
                 vision. We built it for travellers, not tourists: technology that
                 makes your trip easier, backed by local knowledge no generic

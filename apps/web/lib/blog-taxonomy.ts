@@ -16,6 +16,13 @@ export const BLOG_CATEGORIES = [
 
 export type BlogCategory = (typeof BLOG_CATEGORIES)[number];
 
+/** One entry in an article's table of contents. */
+export interface TocEntry {
+  id: string;
+  text: string;
+  level: 2 | 3;
+}
+
 export interface PostMeta {
   slug: string;
   title: string;
