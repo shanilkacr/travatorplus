@@ -12,7 +12,7 @@ const links = [
 export function SiteNav() {
   return (
     <header className="sticky top-0 z-50 px-4 pt-4 md:px-6">
-      <nav className="glass-nav mx-auto flex h-14 max-w-6xl items-center justify-between rounded-full px-5 md:px-7">
+      <nav className="glass-nav mx-auto flex h-14 max-w-6xl items-center justify-between rounded-[16px] px-5 md:px-7">
         <Wordmark />
         <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex">
           {links.map((l) => (

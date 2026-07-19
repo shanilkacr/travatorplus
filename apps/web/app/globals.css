@@ -5,6 +5,10 @@
 /*
  * The ONLY file in apps/web permitted to declare color literals.
  * Glass monochrome UI chrome + full-color photography via Unsplash URLs.
+ *
+ * Border radius strategy: NO fully-rounded (rounded-full) elements anywhere.
+ * Use fixed pixel values: containers 24-40px, cards 16-24px, buttons/badges 12-14px.
+ * This maintains a modern curved aesthetic without pill-shapes or circles.
  */
 :root {
   --color-white: #ffffff;
@@ -148,22 +152,22 @@ body {
   }
 
   .btn {
-    @apply inline-flex items-center justify-center rounded-full bg-gray-100/80 px-6 py-3 text-sm tracking-wide shadow-soft backdrop-blur-sm transition-all duration-200;
+    @apply inline-flex items-center justify-center rounded-[14px] bg-gray-100/80 px-6 py-3 text-sm tracking-wide shadow-soft backdrop-blur-sm transition-all duration-200;
   }
   .btn:hover {
     @apply bg-gray-100 shadow-glass;
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-full bg-ink px-6 py-3 text-sm tracking-wide text-white shadow-glass transition-opacity duration-200;
+    @apply inline-flex items-center justify-center rounded-[14px] bg-ink px-6 py-3 text-sm tracking-wide text-white shadow-glass transition-opacity duration-200;
   }
   .btn-primary:hover {
     opacity: 0.88;
   }
 
-  /* Inverted pill for use over photography / dark surfaces. */
+  /* Inverted button for use over photography / dark surfaces. */
   .btn-inverse {
-    @apply inline-flex items-center justify-center rounded-full bg-white px-6 py-3 text-sm tracking-wide text-ink shadow-glass transition-opacity duration-200;
+    @apply inline-flex items-center justify-center rounded-[14px] bg-white px-6 py-3 text-sm tracking-wide text-ink shadow-glass transition-opacity duration-200;
   }
   .btn-inverse:hover {
     opacity: 0.9;

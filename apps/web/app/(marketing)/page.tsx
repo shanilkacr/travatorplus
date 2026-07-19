@@ -279,7 +279,7 @@ export default function HomePage() {
         />
         <div className="container-editorial relative z-10 pb-16 pt-36 text-center md:pt-40">
           <FadeIn>
-            <span className="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-xs uppercase tracking-widest text-white backdrop-blur-md">
+            <span className="inline-flex items-center gap-2 rounded-[12px] bg-white/20 px-4 py-2 text-xs uppercase tracking-widest text-white backdrop-blur-md">
               <Sun className="h-3.5 w-3.5" aria-hidden />
               AI travel concierge · Sri Lanka
             </span>
@@ -300,9 +300,9 @@ export default function HomePage() {
                 <Star className="h-4 w-4 fill-white" aria-hidden /> 4.8 average
                 trip rating
               </span>
-              <span className="hidden h-1 w-1 rounded-full bg-white/50 sm:block" aria-hidden />
+              <span className="hidden h-1 w-1 rounded-[12px] bg-white/50 sm:block" aria-hidden />
               <span>2,000+ travelers planned</span>
-              <span className="hidden h-1 w-1 rounded-full bg-white/50 sm:block" aria-hidden />
+              <span className="hidden h-1 w-1 rounded-[12px] bg-white/50 sm:block" aria-hidden />
               <span>Humans on call 24/7</span>
             </div>
           </FadeIn>
@@ -343,7 +343,7 @@ export default function HomePage() {
             <FadeIn key={s.n} delay={i * 80}>
               <div className="h-full rounded-[24px] bg-white p-8 shadow-glass">
                 <div className="flex items-center justify-between">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gray-50 shadow-soft">
+                  <span className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-gray-50 shadow-soft">
                     <s.Icon className="h-5 w-5 text-ink" aria-hidden />
                   </span>
                   <span className="font-headline text-3xl text-gray-300">{s.n}</span>
@@ -420,7 +420,7 @@ export default function HomePage() {
                     className="rounded-none transition-transform duration-500 group-hover:scale-105"
                     sizes="320px"
                   />
-                  <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-full bg-white/85 px-2.5 py-1 text-xs text-ink backdrop-blur-sm">
+                  <span className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-[12px] bg-white/85 px-2.5 py-1 text-xs text-ink backdrop-blur-sm">
                     <Star className="h-3 w-3 fill-current" aria-hidden />
                     {stay.rating.toFixed(1)}
                   </span>
@@ -432,7 +432,7 @@ export default function HomePage() {
                     {stay.tags.map((t) => (
                       <span
                         key={t}
-                        className="rounded-full bg-gray-50 px-2.5 py-1 text-xs text-gray-500"
+                        className="rounded-[12px] bg-gray-50 px-2.5 py-1 text-xs text-gray-500"
                       >
                         {t}
                       </span>
@@ -488,7 +488,7 @@ export default function HomePage() {
                   className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent"
                 />
                 <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                  <span className="rounded-full bg-white/20 px-3 py-1 text-xs backdrop-blur-sm">
+                  <span className="rounded-[12px] bg-white/20 px-3 py-1 text-xs backdrop-blur-sm">
                     {plan.days}
                   </span>
                   <h3 className="mt-3 text-xl">{plan.title}</h3>
@@ -511,7 +511,7 @@ export default function HomePage() {
           {WHY.map((w, i) => (
             <FadeIn key={w.title} delay={i * 50}>
               <div className="h-full rounded-[24px] bg-white p-7 shadow-soft transition-shadow hover:shadow-glass">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-50">
+                <span className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-gray-50">
                   <w.Icon className="h-5 w-5 text-ink" aria-hidden />
                 </span>
                 <h3 className="mt-5 text-lg">{w.title}</h3>
@@ -537,7 +537,7 @@ export default function HomePage() {
                 "Dawn-first scheduling for Sigiriya climbs and safari mornings",
               ].map((b) => (
                 <li key={b} className="flex items-start gap-3 text-sm leading-relaxed text-gray-500">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[12px] bg-ink">
                     <Check className="h-3 w-3 text-white" aria-hidden />
                   </span>
                   {b}
@@ -588,7 +588,7 @@ export default function HomePage() {
                 "On call throughout your trip — delays, changes, emergencies",
               ].map((b) => (
                 <li key={b} className="flex items-start gap-3 text-sm leading-relaxed text-gray-500">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-ink">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-[12px] bg-ink">
                     <Check className="h-3 w-3 text-white" aria-hidden />
                   </span>
                   {b}
@@ -625,7 +625,7 @@ export default function HomePage() {
                     "{t.quote}"
                   </blockquote>
                   <figcaption className="mt-6 flex items-center gap-3">
-                    <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 text-sm text-ink">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-gray-100 text-sm text-ink">
                       {t.name.charAt(0)}
                     </span>
                     <span>

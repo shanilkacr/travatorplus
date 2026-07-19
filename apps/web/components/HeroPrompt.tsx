@@ -66,7 +66,7 @@ export function HeroPrompt() {
             <button
               type="button"
               onClick={() => start(s)}
-              className="rounded-full bg-white/25 px-4 py-2 text-xs text-white backdrop-blur-md transition-colors hover:bg-white/40"
+              className="rounded-[12px] bg-white/25 px-4 py-2 text-xs text-white backdrop-blur-md transition-colors hover:bg-white/40"
             >
               {s}
             </button>

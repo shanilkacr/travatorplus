@@ -54,7 +54,7 @@ export function SiteFooter() {
               required
               placeholder="you@email.com"
               aria-label="Email address"
-              className="w-full rounded-full bg-white/10 px-5 py-3 text-sm text-white outline-none placeholder:text-white/40 focus:bg-white/15"
+              className="w-full rounded-[12px] bg-white/10 px-5 py-3 text-sm text-white outline-none placeholder:text-white/40 focus:bg-white/15"
             />
             <button type="submit" className="btn-inverse shrink-0 !py-3">
               Subscribe
