@@ -64,10 +64,12 @@ export function TripComposer({
   const [railOpen, setRailOpen] = useState(variant === "hero");
 
   const isHero = variant === "hero";
-  const inputText = isHero ? "text-[18px] leading-7" : "text-[16px] leading-6";
+  const inputText = isHero
+    ? "text-[16px] leading-6 md:text-[18px] md:leading-7"
+    : "text-[16px] leading-6";
   const inputRow = isHero
     ? "flex flex-wrap items-baseline gap-x-2 gap-y-1"
-    : "flex flex-nowrap items-center gap-x-1";
+    : "flex flex-wrap items-baseline gap-x-1 gap-y-1 xl:flex-nowrap xl:items-center";
   const tagClass = isHero
     ? "group inline-flex animate-chip-in items-baseline whitespace-nowrap text-ink underline decoration-brand decoration-2 underline-offset-4"
     : "group inline animate-chip-in m-0 p-0 whitespace-nowrap text-ink underline decoration-brand decoration-2 underline-offset-[3px]";
@@ -108,14 +110,17 @@ export function TripComposer({
       <div
         className={cn(
           isHero
-            ? "glass-panel !rounded-[26px] !p-2"
-            : "rounded-[24px] bg-gray-50 p-2"
+            ? "glass-panel !rounded-[16px] md:!rounded-[26px] !p-2"
+            : "rounded-[16px] border border-gray-100 bg-gray-100 p-2 xl:rounded-[24px]"
         )}
       >
         {/* Typing surface */}
         <div
           onClick={() => inputRef.current?.focus()}
-          className="cursor-text rounded-[20px] bg-white px-4 pb-3 pt-4 shadow-soft"
+          className={cn(
+            "cursor-text rounded-[12px] bg-white px-4 pb-3 pt-4 md:rounded-[20px]",
+            isHero ? "shadow-soft" : "shadow-soft-chat-input"
+          )}
         >
           {/* Destinations sit in the text flow as words, not chips. */}
           <div className={inputRow}>
@@ -142,7 +147,8 @@ export function TripComposer({
 
             <div
               className={cn(
-                "relative min-w-[12rem] flex-1",
+                "relative min-w-0 flex-1",
+                isHero && "min-w-[8rem] md:min-w-[12rem]",
                 !isHero && "min-h-6 leading-6"
               )}
             >
@@ -178,7 +184,7 @@ export function TripComposer({
                 rows={1}
                 aria-label="Describe your trip"
                 className={cn(
-                  "w-full resize-none bg-transparent outline-none focus-visible:!shadow-none",
+                  "w-full resize-none break-words bg-transparent outline-none focus-visible:!shadow-none",
                   inputText,
                   !isHero && "m-0 p-0"
                 )}
@@ -187,9 +193,9 @@ export function TripComposer({
           </div>
 
           {/* Controls */}
-          <div className="mt-3 flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <DurationStepper value={days} onChange={setDays} />
+          <div className="mt-3 flex items-center justify-between gap-2">
+            <div className="flex min-w-0 items-center gap-1.5">
+              <DurationStepper compact={!isHero} value={days} onChange={setDays} />
               {!isHero && (
                 <button
                   type="button"
@@ -197,13 +203,13 @@ export function TripComposer({
                   aria-expanded={railOpen}
                   aria-label="Toggle destinations"
                   className={cn(
-                    "inline-flex items-center gap-1.5 rounded-[12px] px-2.5 py-2 text-xs transition-colors",
+                    "inline-flex shrink-0 items-center gap-1 rounded-[12px] px-2 py-1.5 text-xs transition-colors",
                     railOpen
                       ? "bg-gray-100 text-ink"
                       : "text-gray-500 hover:bg-gray-50 hover:text-ink"
                   )}
                 >
-                  <MapPin className="h-3.5 w-3.5" aria-hidden />
+                  <MapPin className="h-3.5 w-3.5 shrink-0" aria-hidden />
                   Destinations
                 </button>
               )}
@@ -214,7 +220,8 @@ export function TripComposer({
               disabled={!canSubmit}
               aria-label="Send"
               className={cn(
-                "grid h-9 w-9 place-items-center rounded-[12px] transition-all",
+                "grid shrink-0 place-items-center rounded-[12px] transition-all",
+                isHero ? "h-9 w-9" : "h-9 w-10",
                 canSubmit
                   ? "bg-ink text-white hover:opacity-85"
                   : "bg-gray-100 text-gray-500"
@@ -227,8 +234,18 @@ export function TripComposer({
 
         {/* Destination picker — a slow rail that halts under the cursor. */}
         {railOpen && (
-          <div className="flex items-center gap-2 py-2.5 pl-3">
-            <span className="shrink-0 text-xs text-gray-500">
+          <div
+            className={cn(
+              "flex items-center gap-2 py-2.5 pl-3",
+              !isHero && "max-xl:pl-2"
+            )}
+          >
+            <span
+              className={cn(
+                "shrink-0 text-xs text-gray-500",
+                !isHero && "max-xl:hidden"
+              )}
+            >
               Add destinations
             </span>
             <div className="marquee flex-1">
@@ -246,7 +263,8 @@ export function TripComposer({
                         aria-hidden={copy === 1}
                         onClick={() => addDestination(name)}
                         className={cn(
-                          "whitespace-nowrap rounded-[8px] bg-white/70 px-2.5 py-1 text-xs text-gray-500 shadow-soft transition-colors hover:bg-white hover:text-ink",
+                          "whitespace-nowrap rounded-[8px] bg-white/70 px-2.5 py-1 text-xs text-gray-500 transition-colors hover:bg-white hover:text-ink",
+                          isHero && "shadow-soft",
                           leaving === name && "animate-chip-out"
                         )}
                       >

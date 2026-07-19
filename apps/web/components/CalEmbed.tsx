@@ -1,23 +1,21 @@
+const CALENDLY_URL =
+  process.env.NEXT_PUBLIC_CAL_COM_URL ?? "https://calendly.com/shanilka/30min";
+
+function embedUrl(base: string) {
+  const url = new URL(base);
+  url.searchParams.set("hide_event_type_details", "1");
+  url.searchParams.set("hide_gdpr_banner", "1");
+  url.searchParams.set("background_color", "ffffff");
+  url.searchParams.set("text_color", "0a0a0a");
+  url.searchParams.set("primary_color", "0a0a0a");
+  return url.toString();
+}
+
 export function CalEmbed() {
-  const url = process.env.NEXT_PUBLIC_CAL_COM_URL;
-
-  if (!url) {
-    return (
-      <div className="flex aspect-[4/3] w-full flex-col items-center justify-center rounded-4xl bg-gray-50/80 p-10 text-center shadow-soft">
-        <p className="eyebrow">Scheduler</p>
-        <p className="mt-4 max-w-sm text-sm text-gray-500">
-          The live calendar isn't connected in this environment. Set{" "}
-          <code className="text-ink">NEXT_PUBLIC_CAL_COM_URL</code> to embed
-          Cal.com — or use the form and we'll reach out.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <iframe
-      src={url}
-      title="Book a call"
+      src={embedUrl(CALENDLY_URL)}
+      title="Book a call with the founder"
       className="h-[640px] w-full rounded-4xl shadow-soft"
       loading="lazy"
     />

@@ -7,7 +7,7 @@ import { GlassPanel } from "@/components/glass/GlassPanel";
 export const metadata: Metadata = {
   title: "Book a call",
   description:
-    "Talk to a Travator trip planner. Book a call or send us what you're planning and we'll be in touch.",
+    "Talk to Shanilka, founder of Travator. Book a call or send us what you're planning and we'll be in touch.",
 };
 
 export default function BookACallPage() {
@@ -20,8 +20,8 @@ export default function BookACallPage() {
             Rather talk it through? Let's find a time.
           </h1>
           <p className="mt-6 max-w-xl text-base text-gray-500 md:text-lg">
-            Prefer a human first? Book a call with a planner, or send a note and
-            we'll reach out. Or just{" "}
+            Prefer a human first? Book a call with the founder, or send a note
+            and we'll reach out. Or just{" "}
             <a href="/chat" className="text-ink underline decoration-gray-300 underline-offset-4 hover:decoration-ink">
               start in the chat
             </a>{" "}

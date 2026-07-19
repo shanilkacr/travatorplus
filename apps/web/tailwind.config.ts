@@ -95,6 +95,7 @@ const config: Config = {
         "glass-inset": "inset 0 1px 0 rgba(255, 255, 255, 0.6)",
         soft: "0 2px 12px rgba(10, 10, 10, 0.05)",
         "soft-xs": "0 1px 4px rgba(10, 10, 10, 0.025)",
+        "soft-chat-input": "0 0 20px rgba(10, 10, 10, 0.5)",
       },
       backgroundImage: {
         "frost-gradient":
@@ -112,6 +113,10 @@ const config: Config = {
         "fade-up": {
           "0%": { opacity: "0", transform: "translateY(12px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "slide-in-left": {
+          "0%": { opacity: "0", transform: "translateX(calc(-100% - 1rem))" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
         },
         /* Destination chip landing inside the composer. */
         "chip-in": {
@@ -132,6 +137,8 @@ const config: Config = {
       },
       animation: {
         "fade-up": "fade-up 300ms cubic-bezier(0.22, 1, 0.36, 1) both",
+        "slide-in-left":
+          "slide-in-left 400ms cubic-bezier(0.22, 1, 0.36, 1) both",
         "chip-in": "chip-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both",
         "chip-out": "chip-out 160ms cubic-bezier(0.22, 1, 0.36, 1) both",
         caret: "caret 1.1s steps(1) infinite",

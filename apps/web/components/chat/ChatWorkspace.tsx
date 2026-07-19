@@ -4,10 +4,10 @@ import Link from "next/link";
 import { useState } from "react";
 import {
   ChevronLeft,
-  ChevronRight,
   Compass,
   Copy,
   Map,
+  Route,
   Settings,
   Sparkles,
   ThumbsDown,
@@ -17,9 +17,17 @@ import {
   Wallet,
 } from "lucide-react";
 import { Wordmark } from "@/components/Wordmark";
+import { DotMenuIcon } from "@/components/icons/DotMenuIcon";
 import { TripComposer } from "@/components/composer/TripComposer";
+import {
+  MobilePlanCard,
+  MOBILE_PLAN_MAX_HEIGHT,
+  mobilePlanUsesPageScroll,
+  type MobilePlanExpandLevel,
+} from "@/components/chat/MobilePlanCard";
 import { TravelPlanner } from "@/components/chat/TravelPlanner";
 import { AssistantMessage } from "@/components/chat/AssistantMessage";
+import { MobileWorkspaceMenu } from "@/components/chat/MobileWorkspaceMenu";
 import {
   BuddiesPanel,
   BudgetPanel,
@@ -97,7 +105,13 @@ export function ChatWorkspace({
   );
 
   const [openRail, setOpenRail] = useState<RailKey | null>(null);
+  const [leftPanelOpen, setLeftPanelOpen] = useState(false);
   const [plannerOpen, setPlannerOpen] = useState(Boolean(initialPrompt));
+  const [mobilePlanLevel, setMobilePlanLevel] = useState<MobilePlanExpandLevel>("semi");
+
+  const trip = preset?.trip ?? DEMO_TRIP;
+  const days = preset?.days ?? DEMO_DAYS;
+  const lineItems = preset?.lineItems ?? DEMO_LINE_ITEMS;
 
   const Panel = openRail ? PANELS[openRail] : null;
 
@@ -114,78 +128,208 @@ export function ChatWorkspace({
     ]);
   }
 
-  function toggleRail(key: RailKey) {
+  function selectRail(key: RailKey) {
     setOpenRail((cur) => (cur === key ? null : key));
   }
 
+  function closeLeftPanel() {
+    setLeftPanelOpen(false);
+    setOpenRail(null);
+  }
+
+  function openLeftPanel() {
+    setOpenRail("profile");
+    setLeftPanelOpen(true);
+  }
+
+  const leftMenuToggleClass = cn(
+    "absolute grid h-10 w-10 place-items-center rounded-[10px] transition-all",
+    "text-gray-500 hover:bg-white/60 hover:text-ink"
+  );
+
+  function togglePlanner() {
+    setPlannerOpen((open) => {
+      if (open) return false;
+      setMobilePlanLevel("semi");
+      return true;
+    });
+  }
+
+  const plannerToggleClass = (surface: "mobile" | "desktop") =>
+    cn(
+      "grid h-10 w-10 place-items-center rounded-[10px] transition-all",
+      surface === "mobile" ? "hover:bg-white/60" : "hover:bg-gray-50",
+      plannerOpen
+        ? surface === "mobile"
+          ? "bg-white/70 text-ink shadow-soft-xs ring-1 ring-ink/10"
+          : "bg-gray-100 text-ink ring-1 ring-ink/10"
+        : "text-gray-500 hover:text-ink"
+    );
+
+  const isMobilePageScroll = plannerOpen && mobilePlanUsesPageScroll(mobilePlanLevel);
+
+  function handleComposerSubmit({
+    text,
+    days,
+    destinations,
+  }: {
+    text: string;
+    days: number;
+    destinations: string[];
+  }) {
+    send([...destinations, text].filter(Boolean).join(" ") || `${days} days`);
+  }
+
+  const composer = (
+    <TripComposer
+      variant="chat"
+      staticPlaceholder="Ask Travator anything…"
+      onSubmit={handleComposerSubmit}
+    />
+  );
+
   return (
     <div className="chat-workspace-bg h-[100svh] overflow-hidden">
-      <div className="relative z-10 flex h-full gap-2 p-2 md:gap-3 md:p-3">
-      {/* ── Left rail ─────────────────────────────────────── */}
-      <nav
-        aria-label="Workspace"
-        className="flex shrink-0 flex-col items-center justify-between rounded-[20px] p-2.5"
-      >
-        <div className="flex flex-col items-center gap-2.5">
-          <button
-            type="button"
-            onClick={() => toggleRail("profile")}
-            aria-label="Your profile"
-            aria-pressed={openRail === "profile"}
-            className={cn(
-              PROFILE_BTN,
-              openRail === "profile" &&
-                "ring-2 ring-ink/10 ring-offset-2 ring-offset-gray-50"
-            )}
-          >
-            S
-          </button>
+      {/* Mobile full-screen workspace — outside overflow flex so it can cover the viewport */}
+      <MobileWorkspaceMenu
+        open={leftPanelOpen}
+        openRail={openRail}
+        rail={RAIL}
+        panel={Panel ? <Panel /> : null}
+        onClose={closeLeftPanel}
+        onSelectRail={selectRail}
+      />
 
-          <span className="h-px w-full bg-gray-100" aria-hidden />
-
-          {RAIL.map(({ key, label, Icon }) => (
+      <div className="relative z-10 flex h-full overflow-hidden max-xl:gap-0 max-xl:p-0 xl:gap-3 xl:p-3">
+      {/* ── Desktop left rail + panel ─────────────────────── */}
+      <div className="hidden shrink-0 gap-2 xl:flex">
+        <nav
+          aria-label="Workspace"
+          className="flex w-[4.75rem] shrink-0 flex-col items-center justify-between rounded-[20px] p-2.5"
+        >
+          <div className="flex flex-col items-center gap-2.5">
             <button
-              key={key}
               type="button"
-              onClick={() => toggleRail(key)}
-              aria-label={label}
-              aria-pressed={openRail === key}
-              title={label}
+              onClick={() => selectRail("profile")}
+              aria-label="Your profile"
+              aria-pressed={openRail === "profile"}
               className={cn(
-                openRail === key ? RAIL_BTN_ACTIVE : RAIL_BTN,
-                openRail !== key && "text-gray-500"
+                PROFILE_BTN,
+                openRail === "profile" &&
+                  "ring-2 ring-ink/10 ring-offset-2 ring-offset-gray-50"
               )}
             >
-              <Icon className="h-5 w-5" aria-hidden />
+              S
             </button>
-          ))}
-        </div>
 
-        <button
-          type="button"
-          onClick={() => toggleRail("settings")}
-          aria-label="Settings"
-          aria-pressed={openRail === "settings"}
-          title="Settings"
-          className={cn(
-            openRail === "settings" ? RAIL_BTN_ACTIVE : RAIL_BTN,
-            openRail !== "settings" && "text-gray-500"
+            <span className="h-px w-full bg-gray-100" aria-hidden />
+
+            {RAIL.map(({ key, label, Icon }) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => selectRail(key)}
+                aria-label={label}
+                aria-pressed={openRail === key}
+                title={label}
+                className={cn(
+                  openRail === key ? RAIL_BTN_ACTIVE : RAIL_BTN,
+                  openRail !== key && "text-gray-500"
+                )}
+              >
+                <Icon className="h-5 w-5" aria-hidden />
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => selectRail("settings")}
+            aria-label="Settings"
+            aria-pressed={openRail === "settings"}
+            title="Settings"
+            className={cn(
+              openRail === "settings" ? RAIL_BTN_ACTIVE : RAIL_BTN,
+              openRail !== "settings" && "text-gray-500"
+            )}
+          >
+            <Settings className="h-5 w-5" aria-hidden />
+          </button>
+        </nav>
+
+        {Panel && (
+          <aside className="w-72 shrink-0 overflow-hidden rounded-[20px] animate-fade-up">
+            <Panel />
+          </aside>
+        )}
+      </div>
+
+      {/* ── Mobile column: logo + plan card + chat ─────────── */}
+      <div
+        className={cn(
+          "relative flex min-w-0 flex-1 flex-col max-xl:gap-0 xl:gap-2",
+          isMobilePageScroll
+            ? "min-h-0 overflow-y-auto scrollbar-none pb-36"
+            : "overflow-hidden"
+        )}
+      >
+        {/* Logo on the workspace background — menu + planner toggles */}
+        <header className="relative flex shrink-0 items-center justify-center px-4 py-6 xl:hidden">
+          {!leftPanelOpen && (
+            <button
+              type="button"
+              onClick={openLeftPanel}
+              aria-label="Open workspace menu"
+              aria-expanded={false}
+              className={cn(leftMenuToggleClass, "left-4 z-10")}
+            >
+              <DotMenuIcon className="h-5 w-5" />
+            </button>
           )}
-        >
-          <Settings className="h-5 w-5" aria-hidden />
-        </button>
-      </nav>
 
-      {/* ── Rail panel ────────────────────────────────────── */}
-      {Panel && (
-        <aside className="hidden w-72 shrink-0 animate-fade-up overflow-hidden rounded-[20px] lg:block">
-          <Panel />
-        </aside>
-      )}
+          <Wordmark />
+
+          <button
+            type="button"
+            onClick={togglePlanner}
+            aria-label={plannerOpen ? "Hide travel planner" : "Show travel planner"}
+            aria-pressed={plannerOpen}
+            className={cn("absolute right-4", plannerToggleClass("mobile"))}
+          >
+            <Route className="h-5 w-5" aria-hidden />
+          </button>
+        </header>
+
+        {plannerOpen && (
+          <div
+            className={cn(
+              "shrink-0 px-4 xl:hidden transition-[max-height] duration-300 ease-editorial",
+              !isMobilePageScroll && "overflow-hidden",
+              MOBILE_PLAN_MAX_HEIGHT[mobilePlanLevel]
+            )}
+          >
+            <MobilePlanCard
+              trip={trip}
+              days={days}
+              lineItems={lineItems}
+              expandLevel={mobilePlanLevel}
+              onExpandLevelChange={setMobilePlanLevel}
+              className={isMobilePageScroll ? "h-auto" : "h-full"}
+            />
+          </div>
+        )}
 
       {/* ── Chat ──────────────────────────────────────────── */}
-      <main className="flex min-w-0 flex-1 flex-col overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-soft-xs">
-        <header className="flex h-14 shrink-0 items-center justify-between px-4">
+      <main
+        className={cn(
+          "mobile-chat-ui relative flex min-w-0 flex-col bg-white shadow-soft transition-[width] duration-300 ease-editorial",
+          "max-xl:rounded-b-none max-xl:rounded-t-[16px] xl:rounded-[20px]",
+          isMobilePageScroll
+            ? "shrink-0 xl:min-h-0 xl:flex-1 xl:overflow-hidden"
+            : "min-h-0 flex-1 overflow-hidden"
+        )}
+      >
+        <header className="hidden h-14 shrink-0 items-center justify-between px-4 xl:flex">
           <Link
             href="/"
             aria-label="Back to site"
@@ -198,21 +342,24 @@ export function ChatWorkspace({
 
           <button
             type="button"
-            onClick={() => setPlannerOpen((v) => !v)}
+            onClick={togglePlanner}
             aria-label={plannerOpen ? "Hide travel planner" : "Show travel planner"}
-            aria-expanded={plannerOpen}
-            className="grid h-8 w-8 place-items-center rounded-[10px] text-gray-500 transition-colors hover:bg-gray-50 hover:text-ink"
+            aria-pressed={plannerOpen}
+            className={plannerToggleClass("desktop")}
           >
-            {plannerOpen ? (
-              <ChevronRight className="h-4 w-4" aria-hidden />
-            ) : (
-              <ChevronLeft className="h-4 w-4" aria-hidden />
-            )}
+            <Route className="h-5 w-5" aria-hidden />
           </button>
         </header>
 
         {/* Thread */}
-        <div className="flex-1 overflow-y-auto px-4 py-6 md:px-8">
+        <div
+          className={cn(
+            "px-4 py-6 md:px-8",
+            isMobilePageScroll
+              ? "xl:min-h-0 xl:flex-1 xl:overflow-y-auto xl:scrollbar-none xl:pb-6"
+              : "min-h-0 flex-1 overflow-y-auto pb-32 scrollbar-none xl:pb-6"
+          )}
+        >
           <div className="mx-auto max-w-2xl space-y-8">
             {messages.length === 0 && (
               <div className="py-20 text-center">
@@ -227,7 +374,7 @@ export function ChatWorkspace({
             {messages.map((m) =>
               m.role === "user" ? (
                 <div key={m.id} className="flex justify-end">
-                  <p className="max-w-[85%] animate-fade-up rounded-[18px] bg-gray-50 px-4 py-3 text-sm leading-relaxed text-ink">
+                  <p className="max-w-[85%] animate-fade-up rounded-[18px] bg-gray-50 px-4 py-3 text-sm leading-relaxed text-ink/75">
                     {m.text}
                   </p>
                 </div>
@@ -256,31 +403,26 @@ export function ChatWorkspace({
           </div>
         </div>
 
-        {/* Composer — the hero component in its chat skin. */}
-        <div className="shrink-0 px-4 pb-4 md:px-8">
-          <div className="mx-auto max-w-2xl">
-            <TripComposer
-              variant="chat"
-              staticPlaceholder="Ask Travator anything…"
-              onSubmit={({ text, days, destinations }) =>
-                send([...destinations, text].filter(Boolean).join(" ") || `${days} days`)
-              }
-            />
-          </div>
+        {/* Composer — anchored to chat column on mobile, inline on desktop */}
+        <div
+          className={cn(
+            "pointer-events-none z-50 shrink-0",
+            "max-xl:absolute max-xl:inset-x-0 max-xl:bottom-0 max-xl:px-4 max-xl:pb-[max(0.5rem,env(safe-area-inset-bottom))]",
+            "xl:static xl:pointer-events-auto xl:px-4 xl:pb-4"
+          )}
+        >
+          <div className="pointer-events-auto mx-auto max-w-2xl">{composer}</div>
         </div>
       </main>
+      </div>
 
-      {/* ── Travel planner ────────────────────────────────── */}
+      {/* ── Travel planner (desktop) ──────────────────────── */}
       {plannerOpen && (
         <aside
           aria-label="Travel planner"
           className="hidden w-80 shrink-0 animate-fade-up overflow-hidden rounded-[20px] xl:block"
         >
-          <TravelPlanner
-            trip={preset?.trip ?? DEMO_TRIP}
-            days={preset?.days ?? DEMO_DAYS}
-            lineItems={preset?.lineItems ?? DEMO_LINE_ITEMS}
-          />
+          <TravelPlanner trip={trip} days={days} lineItems={lineItems} />
         </aside>
       )}
       </div>

@@ -129,6 +129,16 @@ body {
   }
 }
 
+@layer utilities {
+  .scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @layer components {
   .dot-pattern {
     pointer-events: none;
@@ -199,7 +209,7 @@ body {
       ),
       radial-gradient(
         ellipse 58% 52% at 50% 44%,
-        rgb(var(--color-white-rgb) / 0.48) 0%,
+        rgb(var(--color-white-rgb) / 0.41) 0%,
         transparent 68%
       );
   }
@@ -212,10 +222,10 @@ body {
     pointer-events: none;
     backdrop-filter: blur(120px) saturate(1.02);
     -webkit-backdrop-filter: blur(120px) saturate(1.02);
-    background-color: rgb(var(--color-gray-50-rgb) / 0.72);
+    background-color: rgb(var(--color-gray-50-rgb) / 0.61);
     box-shadow:
-      inset 0 1px 0 rgb(var(--color-white-rgb) / 0.72),
-      inset 0 0 0 1px rgb(var(--color-white-rgb) / 0.28);
+      inset 0 1px 0 rgb(var(--color-white-rgb) / 0.61),
+      inset 0 0 0 1px rgb(var(--color-white-rgb) / 0.24);
     background-image:
       radial-gradient(
         circle at center,
@@ -224,14 +234,14 @@ body {
       ),
       linear-gradient(
         155deg,
-        rgb(var(--color-white-rgb) / 0.35) 0%,
-        rgb(var(--color-gray-50-rgb) / 0.38) 42%,
-        rgb(var(--color-gray-100-rgb) / 0.22) 100%
+        rgb(var(--color-white-rgb) / 0.3) 0%,
+        rgb(var(--color-gray-50-rgb) / 0.32) 42%,
+        rgb(var(--color-gray-100-rgb) / 0.19) 100%
       ),
       linear-gradient(
         180deg,
-        rgb(var(--color-white-rgb) / 0.22) 0%,
-        rgb(var(--color-gray-50-rgb) / 0.28) 100%
+        rgb(var(--color-white-rgb) / 0.19) 0%,
+        rgb(var(--color-gray-50-rgb) / 0.24) 100%
       );
     background-size: 28px 28px, 100% 100%, 100% 100%;
   }
@@ -491,6 +501,96 @@ body {
   }
   .assistant-prose li::marker {
     @apply text-gray-500;
+  }
+
+  /* Legal pages — privacy policy, terms. */
+  .legal-prose {
+    @apply text-sm leading-relaxed text-gray-500;
+  }
+  .legal-prose > * + * {
+    margin-top: 0.9em;
+  }
+  .legal-prose h3 {
+    @apply text-base text-ink;
+    margin-top: 1.25em;
+    margin-bottom: 0.35em;
+  }
+  .legal-prose p {
+    @apply leading-[1.75];
+  }
+  .legal-prose strong {
+    @apply font-normal text-ink;
+  }
+  .legal-prose ul,
+  .legal-prose ol {
+    @apply space-y-1.5 pl-5;
+  }
+  .legal-prose ul {
+    list-style-type: disc;
+  }
+  .legal-prose ol {
+    list-style-type: decimal;
+  }
+  .legal-prose li::marker {
+    @apply text-gray-300;
+  }
+  .legal-prose a {
+    @apply text-ink underline decoration-gray-300 underline-offset-2 hover:decoration-ink;
+  }
+  .legal-prose code {
+    @apply rounded-[6px] bg-gray-100 px-1.5 py-0.5 text-xs text-ink;
+  }
+  .legal-prose table {
+    @apply mt-3 w-full border-collapse text-xs;
+  }
+  .legal-prose th,
+  .legal-prose td {
+    @apply border border-gray-100 px-3 py-2 text-left align-top;
+  }
+  .legal-prose th {
+    @apply bg-gray-50 text-ink;
+  }
+
+  /*
+   * Mobile chat card — one body size everywhere (16px). Matches WCAG-friendly
+   * minimum for readable UI copy and prevents iOS from zooming focused inputs.
+   */
+  @media (max-width: 1279px) {
+    .mobile-chat-ui {
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    .mobile-chat-ui :is(
+      p,
+      span,
+      li,
+      dt,
+      dd,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      button,
+      label,
+      input,
+      textarea,
+      a,
+      strong,
+      em,
+      small
+    ) {
+      font-size: 1rem !important;
+      line-height: 1.5 !important;
+    }
+
+    .mobile-chat-ui .assistant-prose h2,
+    .mobile-chat-ui .assistant-prose h3 {
+      margin-top: 1.1em;
+      margin-bottom: 0.35em;
+    }
   }
 
   /* Infinite marquee — track is duplicated once in markup for a seamless loop. */

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { FadeIn } from "@/components/FadeIn";
 import { GlassPanel } from "@/components/glass/GlassPanel";
 import { GlassSection } from "@/components/glass/GlassSection";
-import { SriLankaImage } from "@/components/SriLankaImage";
 import { PhotoGrid } from "@/components/PhotoGrid";
-import { SRI_LANKA_IMAGES, TEAM_IMAGES } from "@/lib/images";
+import { TezzeractWordmark } from "@/components/TezzeractWordmark";
+import { SRI_LANKA_IMAGES } from "@/lib/images";
 
 export const metadata: Metadata = {
   title: "Our Story",
@@ -31,12 +33,32 @@ const VALUES = [
   },
 ];
 
-const TEAM = ["Founder & guide", "Head of ops", "Lead driver-guide", "Engineering"];
+const SUSTAINABILITY = [
+  {
+    title: "Spread the load",
+    body: "We route travellers to less-visited regions and shoulder seasons — easing pressure on overcrowded sites and giving quieter corners a fair share of tourism.",
+  },
+  {
+    title: "Spend that stays local",
+    body: "Our stays and driver-guides are locally owned wherever possible, so the money from your trip lands in Sri Lankan hands, not distant intermediaries.",
+  },
+  {
+    title: "Conservation-first choices",
+    body: "Wildlife viewing, heritage visits, and park access are planned with respectful timing and distance — the island's ecosystems come before a good photo.",
+  },
+  {
+    title: "Built for the long run",
+    body: "Every itinerary we shape asks what Sri Lanka needs to thrive for the next generation. Sustainable tourism isn't a tagline for us — it's the only way we operate.",
+  },
+];
 
 const STORY_GRID = [
   { ...SRI_LANKA_IMAGES.teaPicker, className: "md:col-span-2" },
   { ...SRI_LANKA_IMAGES.wildlife, className: "md:col-span-1" },
 ];
+
+const FOUNDER_QUOTE =
+  "As a Sri Lanka–based company, we believe a locally led platform gives travellers the best experience. Most tools guide you tourist-to-tourist. Travator is a hospitable tool from locals to travellers — an AI-fronted knowledge base fully curated by people who understand the beauty of this country. Because when it comes to travelling Sri Lanka, we should know best.";
 
 export default function OurStoryPage() {
   return (
@@ -81,8 +103,12 @@ export default function OurStoryPage() {
             </FadeIn>
             <FadeIn delay={160}>
               <p>
-                We're building the product in the open — real founding photography
-                and team stories land here as we grow.
+                Travator is a product of{" "}
+                <TezzeractWordmark className="h-[1em]" /> (Pvt) Ltd — a Sri
+                Lanka–based tech company with a product-first, solution-oriented
+                vision. We built it for travellers, not tourists: technology that
+                makes your trip easier, backed by local knowledge no generic
+                platform can match.
               </p>
             </FadeIn>
           </div>
@@ -90,6 +116,33 @@ export default function OurStoryPage() {
       </section>
 
       <GlassSection muted>
+        <div className="container-editorial">
+          <FadeIn>
+            <figure className="mx-auto max-w-3xl">
+              <blockquote className="text-xl leading-relaxed text-ink md:text-2xl">
+                &ldquo;{FOUNDER_QUOTE}&rdquo;
+              </blockquote>
+              <figcaption className="mt-8 flex items-center gap-4">
+                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full">
+                  <Image
+                    src="/images/founder-shanilka.png"
+                    alt="Shanilka Rajapaksha"
+                    fill
+                    className="object-cover object-top"
+                    sizes="56px"
+                  />
+                </div>
+                <div>
+                  <p className="text-sm text-ink">Shanilka Rajapaksha</p>
+                  <p className="text-xs text-gray-500">Founder of Travator</p>
+                </div>
+              </figcaption>
+            </figure>
+          </FadeIn>
+        </div>
+      </GlassSection>
+
+      <GlassSection>
         <div className="container-editorial">
           <FadeIn>
             <p className="eyebrow mb-10">What we value</p>
@@ -107,33 +160,49 @@ export default function OurStoryPage() {
         </div>
       </GlassSection>
 
-      <GlassSection>
+      <GlassSection muted>
         <div className="container-editorial">
           <FadeIn>
-            <p className="eyebrow mb-10">The team</p>
+            <p className="eyebrow mb-4">Sustainability</p>
+            <h2 className="max-w-2xl text-3xl md:text-4xl">
+              A sustainability-led movement
+            </h2>
+            <p className="mt-5 max-w-2xl text-base text-gray-500 md:text-lg">
+              We are fully focused on building a sustainable tourism brand — saving
+              Sri Lanka for the next generation. Here is how every trip we plan
+              moves the industry in that direction.
+            </p>
           </FadeIn>
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-            {TEAM.map((role, i) => (
-              <FadeIn key={role} delay={i * 60}>
-                <div>
-                  <div className="relative aspect-square w-full overflow-hidden rounded-4xl shadow-glass">
-                    <SriLankaImage
-                      image={TEAM_IMAGES[i] ?? SRI_LANKA_IMAGES.colombo}
-                      fill
-                      rounded="3xl"
-                      sizes="(max-width:768px) 50vw, 25vw"
-                    />
-                  </div>
-                  <p className="mt-3 text-sm text-ink">Name Surname</p>
-                  <p className="text-xs text-gray-500">
-                    {role}
-                  </p>
-                </div>
+          <div className="mt-12 grid grid-cols-1 gap-4 md:grid-cols-2">
+            {SUSTAINABILITY.map((item, i) => (
+              <FadeIn key={item.title} delay={i * 60}>
+                <GlassPanel className="h-full p-8">
+                  <h3 className="text-xl">{item.title}</h3>
+                  <p className="mt-3 text-sm text-gray-500">{item.body}</p>
+                </GlassPanel>
               </FadeIn>
             ))}
           </div>
         </div>
       </GlassSection>
+
+      <section className="container-editorial pb-24 pt-8">
+        <FadeIn>
+          <div className="rounded-[32px] bg-ink px-8 py-14 text-center md:px-16 md:py-20">
+            <p className="eyebrow !text-white/50">Founder access</p>
+            <h2 className="mx-auto mt-4 max-w-xl text-3xl text-white md:text-4xl">
+              Talk to the founder directly
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-sm text-white/70 md:text-base">
+              Questions about the product, a partnership, or a trip you are
+              planning? Book a slot with Shanilka — no gatekeepers.
+            </p>
+            <Link href="/book-a-call" className="btn-inverse mt-8">
+              Book a call
+            </Link>
+          </div>
+        </FadeIn>
+      </section>
     </>
   );
 }

@@ -221,7 +221,7 @@ export default function HomePage() {
           10px gap between the card edge and the nav. The card is 100svh − 20px
           tall, so it sits centred with 10px above and below. */}
       <section className="-mt-[calc(20px+3.5rem)] p-[10px]">
-        <div className="relative flex min-h-[calc(100svh-20px)] flex-col justify-center overflow-hidden rounded-[32px]">
+        <div className="relative flex min-h-[calc(100svh-20px)] flex-col justify-center overflow-hidden rounded-[16px] md:rounded-[32px]">
           <Image
             src="/images/hero-sunset.jpg"
             alt="Sunset over a rocky Sri Lankan beach with leaning coconut palms"
@@ -545,7 +545,7 @@ export default function HomePage() {
               ))}
             </ul>
             <Link href="/our-story" className="btn mt-8">
-              Meet the team
+              Our story
             </Link>
           </FadeIn>
         </div>

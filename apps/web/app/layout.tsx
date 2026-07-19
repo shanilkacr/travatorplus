@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { CookieConsent } from "@/components/CookieConsent";
 import "./globals.css";
 import { fontFamilyStyle, MONA_SANS_URL } from "./fonts";
 
@@ -33,6 +34,7 @@ export default function RootLayout({
       >
         <div aria-hidden className="dot-pattern absolute inset-0 opacity-40" />
         <div className="relative z-10">{children}</div>
+        <CookieConsent />
       </body>
     </html>
   );
