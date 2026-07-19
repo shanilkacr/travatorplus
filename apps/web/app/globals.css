@@ -26,6 +26,11 @@
   --color-gray-300-rgb: 212 212 212;
   --color-gray-500-rgb: 115 115 115;
 
+  /* Brand accent, taken from the wordmark. Used only to mark destination
+     tokens inside the composer — never for UI chrome. */
+  --color-accent: #e8833a;
+  --color-accent-rgb: 232 131 58;
+
   --glass-bg: rgba(255, 255, 255, 0.55);
   --glass-bg-strong: rgba(255, 255, 255, 0.72);
   --glass-blur: 12px;

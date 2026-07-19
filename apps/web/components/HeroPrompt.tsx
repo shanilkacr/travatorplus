@@ -45,11 +45,12 @@ export function HeroPrompt() {
   const available = DESTINATIONS.filter((d) => !picked.includes(d));
 
   function addDestination(name: string) {
-    // Let the picker chip play its exit before it unmounts.
+    // Let the picker tag play its exit before it unmounts.
     setLeaving(name);
     setTimeout(() => {
       setPicked((cur) => (cur.includes(name) ? cur : [...cur, name]));
       setLeaving(null);
+      inputRef.current?.focus();
     }, 140);
   }
 
@@ -58,14 +59,11 @@ export function HeroPrompt() {
     inputRef.current?.focus();
   }
 
+  /** Destinations read as ordinary words in the sentence we send. */
   function submit() {
-    const parts = [
-      `${days} ${days === 1 ? "day" : "days"} in Sri Lanka`,
-      picked.length ? `visiting ${picked.join(", ")}` : null,
-      value.trim() || null,
-    ].filter(Boolean);
-
-    const prompt = parts.join(" — ");
+    const words = [...picked, value.trim()].filter(Boolean).join(" ");
+    if (!words) return;
+    const prompt = `${words} — ${days} ${days === 1 ? "day" : "days"} in Sri Lanka`;
     router.push(`/chat?prompt=${encodeURIComponent(prompt)}`);
   }
 
@@ -80,12 +78,12 @@ export function HeroPrompt() {
           onClick={() => inputRef.current?.focus()}
           className="cursor-text rounded-[20px] bg-white px-4 pb-3 pt-4 shadow-soft"
         >
-          {/* Chips flow inline with the text, Grammarly-style. */}
-          <div className="flex flex-wrap items-center gap-1.5">
+          {/* Destinations sit in the text flow as words, not as chips. */}
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
             {picked.map((name) => (
               <span
                 key={name}
-                className="group inline-flex animate-chip-in items-center gap-1 rounded-[8px] bg-gray-100 py-1 pl-2.5 pr-2 text-sm text-ink"
+                className="group inline-flex animate-chip-in items-baseline whitespace-nowrap text-[18px] leading-7 text-ink underline decoration-brand decoration-2 underline-offset-4"
               >
                 {name}
                 <button
@@ -95,19 +93,20 @@ export function HeroPrompt() {
                     removeDestination(name);
                   }}
                   aria-label={`Remove ${name}`}
-                  className="grid h-4 w-4 place-items-center rounded-[5px] text-gray-500 opacity-0 transition-all hover:bg-gray-300 hover:text-ink focus-visible:opacity-100 group-hover:opacity-100"
+                  /* `hidden` (not opacity) so no space is reserved when idle. */
+                  className="ml-1 hidden h-4 w-4 shrink-0 place-items-center self-center rounded-[5px] text-gray-500 transition-colors hover:bg-gray-100 hover:text-ink group-focus-within:grid group-hover:grid"
                 >
                   <X className="h-3 w-3" aria-hidden />
                 </button>
               </span>
             ))}
 
-            {/* Typewriter placeholder — a real element so chips can sit beside it. */}
+            {/* Typewriter placeholder — a real element so words can precede it. */}
             <div className="relative min-w-[12rem] flex-1">
               {isEmpty && (
                 <span
                   aria-hidden
-                  className="pointer-events-none absolute inset-y-0 left-0 flex items-center whitespace-pre text-base text-gray-500"
+                  className="pointer-events-none absolute inset-y-0 left-0 flex items-center whitespace-pre text-[18px] text-gray-500"
                 >
                   {typed}
                   <span className="ml-px inline-block w-px animate-caret self-stretch bg-gray-500" />
@@ -122,7 +121,6 @@ export function HeroPrompt() {
                     e.preventDefault();
                     if (canSubmit) submit();
                   }
-                  // Backspace at the start pops the last chip.
                   const last = picked[picked.length - 1];
                   if (e.key === "Backspace" && value === "" && last) {
                     e.preventDefault();
@@ -131,7 +129,8 @@ export function HeroPrompt() {
                 }}
                 rows={1}
                 aria-label="Describe your trip"
-                className="w-full resize-none bg-transparent text-base leading-7 outline-none"
+                /* The white card is the focus surface; suppress the global ring. */
+                className="w-full resize-none bg-transparent text-[18px] leading-7 outline-none focus-visible:!shadow-none"
               />
             </div>
           </div>
@@ -156,22 +155,35 @@ export function HeroPrompt() {
           </div>
         </div>
 
-        {/* Destination picker — chips leave here and land in the composer. */}
-        <div className="flex flex-wrap items-center gap-1.5 px-3 py-2.5">
-          <span className="mr-1 text-xs text-gray-500">Add destinations</span>
-          {available.map((name) => (
-            <button
-              key={name}
-              type="button"
-              onClick={() => addDestination(name)}
-              className={cn(
-                "rounded-[8px] bg-white/70 px-2.5 py-1 text-xs text-ink shadow-soft transition-colors hover:bg-white",
-                leaving === name && "animate-chip-out"
-              )}
+        {/* Destination picker — a slow rail that halts under the cursor. */}
+        <div className="flex items-center gap-2 py-2.5 pl-3">
+          <span className="shrink-0 text-xs text-gray-500">Add destinations</span>
+          <div className="marquee flex-1">
+            <div
+              className="marquee-track !gap-2"
+              style={{ animationDuration: "60s" }}
             >
-              {name}
-            </button>
-          ))}
+              {[0, 1].map((copy) => (
+                <div key={copy} className="flex items-center gap-2">
+                  {available.map((name) => (
+                    <button
+                      key={`${copy}-${name}`}
+                      type="button"
+                      tabIndex={copy === 1 ? -1 : undefined}
+                      aria-hidden={copy === 1}
+                      onClick={() => addDestination(name)}
+                      className={cn(
+                        "whitespace-nowrap rounded-[8px] bg-white/70 px-2.5 py-1 text-xs text-gray-500 shadow-soft transition-colors hover:bg-white hover:text-ink",
+                        leaving === name && "animate-chip-out"
+                      )}
+                    >
+                      {name}
+                    </button>
+                  ))}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -263,21 +263,23 @@ const FAQS = [
 export default function HomePage() {
   return (
     <>
-      {/* Hero — full-bleed sunset, floating nav overlaps via -mt */}
-      <section className="relative -mt-[4.5rem] flex min-h-[100svh] flex-col justify-center overflow-hidden">
-        <Image
-          src="/images/hero-sunset.jpg"
-          alt="Sunset over a rocky Sri Lankan beach with leaning coconut palms"
-          fill
-          priority
-          className="object-cover"
-          sizes="100vw"
-        />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/10 to-black/45"
-        />
-        <div className="container-editorial relative z-10 pb-16 pt-36 text-center md:pt-40">
+      {/* Hero — inset card with an equal margin on all four sides. The nav is
+          pulled over it via -mt so it floats inside the card. */}
+      <section className="-mt-[4.5rem] p-3 md:p-4">
+        <div className="relative flex min-h-[calc(100svh-1.5rem)] flex-col justify-center overflow-hidden rounded-[32px] md:min-h-[calc(100svh-2rem)]">
+          <Image
+            src="/images/hero-sunset.jpg"
+            alt="Sunset over a rocky Sri Lankan beach with leaning coconut palms"
+            fill
+            priority
+            className="object-cover"
+            sizes="100vw"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/10 to-black/45"
+          />
+          <div className="container-editorial relative z-10 pb-16 pt-32 text-center md:pt-36">
           <FadeIn>
             <span className="inline-flex items-center gap-2 rounded-[12px] bg-white/20 px-4 py-2 text-xs uppercase tracking-widest text-white backdrop-blur-md">
               <Sun className="h-3.5 w-3.5" aria-hidden />
@@ -306,6 +308,7 @@ export default function HomePage() {
               <span>Humans on call 24/7</span>
             </div>
           </FadeIn>
+          </div>
         </div>
       </section>
 

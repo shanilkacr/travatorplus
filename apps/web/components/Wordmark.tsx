@@ -15,8 +15,8 @@ export function Wordmark({ className = "" }: { className?: string }) {
         width={1329}
         height={643}
         priority
-        className="h-7 w-auto md:h-8"
-        sizes="(max-width: 768px) 120px, 140px"
+        className="h-[21px] w-auto md:h-6"
+        sizes="(max-width: 768px) 90px, 105px"
       />
     </Link>
   );

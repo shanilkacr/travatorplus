@@ -24,6 +24,8 @@ const config: Config = {
         300: "rgb(var(--color-gray-300-rgb) / <alpha-value>)",
         500: "rgb(var(--color-gray-500-rgb) / <alpha-value>)",
       },
+      /* Brand accent — composer destination tokens only. */
+      brand: "rgb(var(--color-accent-rgb) / <alpha-value>)",
       background: "var(--background)",
       foreground: "var(--foreground)",
       primary: {
