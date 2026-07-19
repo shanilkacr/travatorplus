@@ -156,26 +156,95 @@ body {
     @apply bg-gray-50/80 shadow-soft;
   }
 
+  /*
+   * Buttons use a dimensional "soft key" treatment: a top-lit vertical
+   * gradient, a bright inner bevel on the top edge, a darker inner edge at the
+   * base, and stacked ambient shadows for lift. Radii stay on the fixed scale.
+   */
   .btn {
-    @apply inline-flex items-center justify-center rounded-[14px] bg-gray-100/80 px-6 py-3 text-sm tracking-wide shadow-soft backdrop-blur-sm transition-all duration-200;
+    @apply inline-flex items-center justify-center rounded-[14px] px-6 py-3 text-sm tracking-wide text-ink transition-all duration-200;
+    background: linear-gradient(180deg, #ffffff 0%, #f7f7f7 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      inset 0 0 0 1px rgba(10, 10, 10, 0.05),
+      0 1px 2px rgba(10, 10, 10, 0.05),
+      0 3px 8px rgba(10, 10, 10, 0.05);
   }
   .btn:hover {
-    @apply bg-gray-100 shadow-glass;
+    background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 1),
+      inset 0 0 0 1px rgba(10, 10, 10, 0.06),
+      0 2px 4px rgba(10, 10, 10, 0.06),
+      0 6px 14px rgba(10, 10, 10, 0.07);
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-[14px] bg-ink px-6 py-3 text-sm tracking-wide text-white shadow-glass transition-opacity duration-200;
+    @apply inline-flex items-center justify-center rounded-[14px] px-6 py-3 text-sm tracking-wide text-ink transition-all duration-200;
+    background: linear-gradient(180deg, #ffffff 0%, #f2f2f2 55%, #e6e6e6 100%);
+    box-shadow:
+      /* bright bevel along the top edge */
+      inset 0 1.5px 0 rgba(255, 255, 255, 1),
+      /* seated edge at the base */
+      inset 0 -1.5px 1px rgba(10, 10, 10, 0.07),
+      /* hairline outline */
+      inset 0 0 0 1px rgba(10, 10, 10, 0.07),
+      /* contact + ambient lift */
+      0 1px 2px rgba(10, 10, 10, 0.08),
+      0 4px 10px rgba(10, 10, 10, 0.1),
+      0 10px 24px rgba(10, 10, 10, 0.09);
   }
   .btn-primary:hover {
-    opacity: 0.88;
+    background: linear-gradient(180deg, #ffffff 0%, #f6f6f6 55%, #ededed 100%);
+    transform: translateY(-1px);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255, 255, 255, 1),
+      inset 0 -1.5px 1px rgba(10, 10, 10, 0.06),
+      inset 0 0 0 1px rgba(10, 10, 10, 0.07),
+      0 2px 4px rgba(10, 10, 10, 0.08),
+      0 8px 18px rgba(10, 10, 10, 0.12),
+      0 16px 32px rgba(10, 10, 10, 0.1);
+  }
+  .btn-primary:active {
+    transform: translateY(0.5px);
+    background: linear-gradient(180deg, #f2f2f2 0%, #e9e9e9 100%);
+    box-shadow:
+      inset 0 1px 2px rgba(10, 10, 10, 0.12),
+      inset 0 0 0 1px rgba(10, 10, 10, 0.08),
+      0 1px 2px rgba(10, 10, 10, 0.06);
+  }
+  .btn-primary:disabled {
+    transform: none;
+    background: #f4f4f4;
+    box-shadow: inset 0 0 0 1px rgba(10, 10, 10, 0.05);
   }
 
-  /* Inverted button for use over photography / dark surfaces. */
+  /* Same key, tuned to read against photography and the dark footer. */
   .btn-inverse {
-    @apply inline-flex items-center justify-center rounded-[14px] bg-white px-6 py-3 text-sm tracking-wide text-ink shadow-glass transition-opacity duration-200;
+    @apply inline-flex items-center justify-center rounded-[14px] px-6 py-3 text-sm tracking-wide text-ink transition-all duration-200;
+    background: linear-gradient(180deg, #ffffff 0%, #f2f2f2 55%, #e8e8e8 100%);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255, 255, 255, 1),
+      inset 0 -1.5px 1px rgba(10, 10, 10, 0.07),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.4),
+      0 2px 6px rgba(0, 0, 0, 0.2),
+      0 8px 20px rgba(0, 0, 0, 0.24);
   }
   .btn-inverse:hover {
-    opacity: 0.9;
+    transform: translateY(-1px);
+    background: linear-gradient(180deg, #ffffff 0%, #f7f7f7 55%, #efefef 100%);
+    box-shadow:
+      inset 0 1.5px 0 rgba(255, 255, 255, 1),
+      inset 0 -1.5px 1px rgba(10, 10, 10, 0.06),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.5),
+      0 4px 10px rgba(0, 0, 0, 0.22),
+      0 14px 30px rgba(0, 0, 0, 0.26);
+  }
+  .btn-inverse:active {
+    transform: translateY(0.5px);
+    box-shadow:
+      inset 0 1px 2px rgba(10, 10, 10, 0.12),
+      0 1px 3px rgba(0, 0, 0, 0.2);
   }
 
   .input {

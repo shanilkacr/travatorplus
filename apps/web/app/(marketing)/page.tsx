@@ -5,7 +5,6 @@ import {
   Map,
   CalendarCheck,
   Clock,
-  Compass,
   ShieldCheck,
   Sun,
   Users,
@@ -16,23 +15,11 @@ import {
 import { HeroPrompt } from "@/components/HeroPrompt";
 import { FadeIn } from "@/components/FadeIn";
 import { FaqAccordion } from "@/components/FaqAccordion";
+import { ScrollRevealText } from "@/components/ScrollRevealText";
 import { SriLankaImage } from "@/components/SriLankaImage";
 import { SRI_LANKA_IMAGES } from "@/lib/images";
 
 /* ── Content (all original Travator copy) ─────────────────── */
-
-const MARQUEE_STOPS = [
-  "Sigiriya",
-  "Ella",
-  "Kandy",
-  "Galle Fort",
-  "Mirissa",
-  "Nuwara Eliya",
-  "Yala",
-  "Trincomalee",
-  "Arugam Bay",
-  "Colombo",
-];
 
 const STEPS = [
   {
@@ -288,10 +275,6 @@ export default function HomePage() {
             <h1 className="mx-auto mt-6 text-4xl leading-[1.04] tracking-tightest text-white md:text-6xl">
               Your Sri Lanka trip, planned in one conversation
             </h1>
-            <p className="mx-auto mt-5 max-w-xl text-base text-white/85 md:text-lg">
-              Describe the trip you want. Travator builds the itinerary, finds
-              the stays, and books the driver — while you watch it happen.
-            </p>
           </FadeIn>
           <FadeIn delay={120} className="mx-auto mt-9 max-w-2xl">
             <HeroPrompt />
@@ -303,34 +286,25 @@ export default function HomePage() {
                 trip rating
               </span>
               <span className="hidden h-1 w-1 rounded-[12px] bg-white/50 sm:block" aria-hidden />
-              <span>2,000+ travelers planned</span>
-              <span className="hidden h-1 w-1 rounded-[12px] bg-white/50 sm:block" aria-hidden />
-              <span>Humans on call 24/7</span>
+              <a
+                href="tel:+94776576488"
+                className="underline decoration-white/40 underline-offset-4 transition-colors hover:text-white hover:decoration-white"
+              >
+                Humans on call 24/7
+              </a>
             </div>
           </FadeIn>
           </div>
         </div>
       </section>
 
-      {/* Destination marquee */}
-      <section className="border-y border-gray-100 bg-white py-6">
-        <div className="marquee">
-          <div className="marquee-track">
-            {[0, 1].map((copy) => (
-              <div key={copy} className="flex items-center gap-12" aria-hidden={copy === 1}>
-                {MARQUEE_STOPS.map((stop) => (
-                  <span
-                    key={`${copy}-${stop}`}
-                    className="flex items-center gap-12 whitespace-nowrap text-lg font-headline text-gray-500"
-                  >
-                    {stop}
-                    <Compass className="h-4 w-4 text-gray-300" aria-hidden />
-                  </span>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
+      {/* Lead paragraph — display-scale, revealed word by word on scroll.
+          Stays a <p> so it reads as the page's lead copy. */}
+      <section className="container-editorial py-24 md:py-36">
+        <ScrollRevealText
+          text="Describe the trip you want. Travator builds the itinerary, finds the stays, and books the driver — while you watch it happen."
+          className="mx-auto max-w-4xl text-center text-3xl leading-[1.25] tracking-tightest text-ink md:text-5xl"
+        />
       </section>
 
       {/* 3 steps */}
