@@ -110,9 +110,28 @@ const config: Config = {
           "0%": { opacity: "0", transform: "translateY(12px)" },
           "100%": { opacity: "1", transform: "translateY(0)" },
         },
+        /* Destination chip landing inside the composer. */
+        "chip-in": {
+          "0%": { opacity: "0", transform: "translateY(8px) scale(0.86)" },
+          "60%": { transform: "translateY(0) scale(1.04)" },
+          "100%": { opacity: "1", transform: "translateY(0) scale(1)" },
+        },
+        /* Destination chip leaving the picker row. */
+        "chip-out": {
+          "0%": { opacity: "1", transform: "scale(1)" },
+          "100%": { opacity: "0", transform: "translateY(-6px) scale(0.9)" },
+        },
+        caret: {
+          "0%, 45%": { opacity: "1" },
+          "50%, 95%": { opacity: "0" },
+          "100%": { opacity: "1" },
+        },
       },
       animation: {
         "fade-up": "fade-up 300ms cubic-bezier(0.22, 1, 0.36, 1) both",
+        "chip-in": "chip-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both",
+        "chip-out": "chip-out 160ms cubic-bezier(0.22, 1, 0.36, 1) both",
+        caret: "caret 1.1s steps(1) infinite",
       },
     },
   },
