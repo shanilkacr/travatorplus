@@ -620,8 +620,21 @@ body {
   .marquee-continuous {
     mask-image: none;
     -webkit-mask-image: none;
-    overflow: visible;
-    padding-block: 3px;
+    /*
+     * `overflow: visible` here let the duplicated track (~3,500px) extend the
+     * document, so every page carrying this marquee scrolled sideways on
+     * mobile. `clip` contains it without creating a scroll container, and the
+     * clip margin lets card shadows bleed past the edge — which is what the
+     * visible overflow was for.
+     */
+    overflow: hidden; /* fallback for browsers without overflow: clip */
+    overflow: clip;
+    /*
+     * No clip margin: it counts toward scrollable overflow, which reintroduced
+     * the sideways scroll it was meant to avoid. Card shadows get their room
+     * from the block padding instead.
+     */
+    padding-block: 12px;
   }
 
   .plan-marquee-card-wrap {

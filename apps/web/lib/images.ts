@@ -6,7 +6,16 @@ export interface SriLankaImageMeta {
   region?: string;
 }
 
-const unsplash = (id: string, w = 960) =>
+/**
+ * Unsplash source URL.
+ *
+ * The width here caps what next/image has to work from, so it must exceed the
+ * largest surface any image is rendered at — otherwise Next upscales a small
+ * original and the result is visibly soft. 1600 covers the widest use (the blog
+ * feature image, roughly 1200 CSS px) with headroom for 2x, while avoiding the
+ * multi-megabyte originals Unsplash serves without a width.
+ */
+const unsplash = (id: string, w = 1600) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=75`;
 
 /**

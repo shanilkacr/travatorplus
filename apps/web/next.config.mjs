@@ -10,6 +10,10 @@ const nextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com", pathname: "/**" },
     ],
+    // AVIF first — typically 20-30% smaller than WebP at equivalent quality.
+    formats: ["image/avif", "image/webp"],
+    // Remote sources are immutable per URL, so cache the optimised output hard.
+    minimumCacheTTL: 60 * 60 * 24 * 30,
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
