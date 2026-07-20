@@ -34,6 +34,7 @@ import {
   classifyFailure,
   type FallbackReason,
 } from "@/lib/chat-fallback";
+import { streamAssistantReply } from "@/lib/chat-stream";
 import { MobileWorkspaceMenu } from "@/components/chat/MobileWorkspaceMenu";
 import {
   BuddiesPanel,
@@ -46,17 +47,6 @@ import {
 import { getSamplePlanPreset } from "@/lib/sample-plans";
 import { DEMO_DAYS, DEMO_LINE_ITEMS, DEMO_TRIP } from "@/lib/demo-trip";
 import { cn } from "@/lib/utils";
-
-const DEFAULT_ASSISTANT_REPLY = `Good shape for a week. I've drafted a route that keeps the driving sensible — two nights at Sigiriya so you get a dawn climb without a rushed morning, then Kandy, the hill-country train down to Ella, and a soft landing on the south coast.
-
-## The route
-
-- **Sigiriya** — two nights, dawn climb at the rock
-- **Kandy** — temple of the tooth, spice garden
-- **Ella** — hill-country train, Nine Arch Bridge
-- **South coast** — a soft landing to finish
-
-The planner on the right has the day-by-day and a running cost. Tell me what to change.`;
 
 type RailKey = "profile" | "buddies" | "explore" | "map" | "budget" | "settings";
 
@@ -102,18 +92,20 @@ export function ChatWorkspace({
 }) {
   const preset = getSamplePlanPreset(initialPreset);
 
-  const [messages, setMessages] = useState<Message[]>(() =>
-    initialPrompt
-      ? [
-          { id: "m1", role: "user", text: initialPrompt },
-          {
-            id: "m2",
-            role: "assistant",
-            text: preset?.assistantReply ?? DEFAULT_ASSISTANT_REPLY,
-          },
-        ]
-      : []
-  );
+  // Curated sample-plan demos stay canned (dedicated marketing content tied to
+  // a specific itinerary). A freeform prompt with no matching preset is a real
+  // conversation from the first turn — seed just the user's bubble here and
+  // kick off the actual backend turn in the effect below.
+  const [messages, setMessages] = useState<Message[]>(() => {
+    if (!initialPrompt) return [];
+    if (preset) {
+      return [
+        { id: "m1", role: "user", text: initialPrompt },
+        { id: "m2", role: "assistant", text: preset.assistantReply },
+      ];
+    }
+    return [{ id: "m1", role: "user", text: initialPrompt }];
+  });
 
   const [openRail, setOpenRail] = useState<RailKey | null>(null);
   const [leftPanelOpen, setLeftPanelOpen] = useState(false);
@@ -128,6 +120,22 @@ export function ChatWorkspace({
     const pending = timers.current;
     return () => pending.forEach(clearTimeout);
   }, []);
+
+  // The backend conversation this thread maps to. Created lazily on first
+  // send so viewing the page never writes an empty conversation row.
+  const conversationIdRef = useRef<string | null>(null);
+  const creatingRef = useRef<Promise<string> | null>(null);
+  //
+  // Deliberately no abort-on-unmount here. React 18 StrictMode double-invokes
+  // effects in dev (mount → cleanup → mount) to surface exactly this kind of
+  // bug: an abort tied to a generic unmount effect fired during the synthetic
+  // cleanup and cancelled the *first* real request before the startedInitialTurn
+  // guard below could let a genuine second attempt through — so the initial
+  // turn was silently killed pre-flight (visible as zero POSTs to
+  // /messages in the network log, only the earlier /conversations calls).
+  // React 18 also no longer warns on setState after unmount, so skipping this
+  // is safe; the only cost is a rare wasted request if someone navigates away
+  // mid-stream.
 
   const trip = preset?.trip ?? DEMO_TRIP;
   const days = preset?.days ?? DEMO_DAYS;
@@ -170,38 +178,92 @@ export function ChatWorkspace({
     });
   }
 
+  /** Creates the backend conversation on first use; reused for every later turn. */
+  async function ensureConversationId(): Promise<string> {
+    if (conversationIdRef.current) return conversationIdRef.current;
+    if (!creatingRef.current) {
+      creatingRef.current = fetch(`${API_BASE}/v1/conversations`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({}),
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error(`create conversation failed: ${res.status}`);
+          return res.json() as Promise<{ id: string }>;
+        })
+        .then(({ id }) => {
+          conversationIdRef.current = id;
+          return id;
+        });
+    }
+    return creatingRef.current;
+  }
+
+  /** Streams a real assistant turn for `text` and appends it token by token. */
+  async function respond(text: string) {
+    setTyping(true);
+    const assistantId = `a${Date.now()}`;
+    let started = false;
+
+    try {
+      const conversationId = await ensureConversationId();
+      await streamAssistantReply(
+        API_BASE,
+        conversationId,
+        text,
+        {
+          onToken: (delta) => {
+            if (!started) {
+              started = true;
+              setTyping(false);
+              setMessages((cur) => [...cur, { id: assistantId, role: "assistant", text: delta }]);
+            } else {
+              setMessages((cur) =>
+                cur.map((m) => (m.id === assistantId ? { ...m, text: m.text + delta } : m))
+              );
+            }
+          },
+          onMessageEnd: () => {
+            // Content is already fully assembled from token deltas.
+          },
+          onHandoff: () => {
+            throw new Error("handoff");
+          },
+          onError: (_code, message) => {
+            throw new Error(message);
+          },
+        }
+      );
+
+      if (!started) throw new Error("empty reply");
+    } catch (err) {
+      setTyping(false);
+      // Never surface the failure. Route the traveller to a person instead —
+      // unless the turn already started streaming real content, in which case
+      // leave the partial reply rather than replacing it with a fallback.
+      if (!started) playFallback(classifyFailure(err), text);
+    }
+  }
+
+  // A freeform first prompt (no matching sample-plan preset) starts a real
+  // conversation immediately — guarded so React 18 dev-mode's double-invoke
+  // of effects can't fire it twice.
+  const startedInitialTurn = useRef(false);
+  useEffect(() => {
+    if (initialPrompt && !preset && !startedInitialTurn.current) {
+      startedInitialTurn.current = true;
+      void respond(initialPrompt);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function send(text: string) {
     if (!text) return;
-
     setMessages((cur) => [
       ...cur,
       { id: `u${cur.length}-${Date.now()}`, role: "user", text },
     ]);
-
-    setTyping(true);
-    try {
-      const res = await fetch(`${API_BASE}/v1/chat/preview`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ message: text }),
-        signal: AbortSignal.timeout(12_000),
-      });
-
-      if (!res.ok) throw res.status;
-
-      const data = (await res.json()) as { reply?: string };
-      if (!data.reply) throw new Error("empty reply");
-
-      setTyping(false);
-      setMessages((cur) => [
-        ...cur,
-        { id: `a${cur.length}-${Date.now()}`, role: "assistant", text: data.reply! },
-      ]);
-    } catch (err) {
-      // Never surface the failure. Route the traveller to a person instead.
-      setTyping(false);
-      playFallback(classifyFailure(err), text);
-    }
+    await respond(text);
   }
 
   function selectRail(key: RailKey) {

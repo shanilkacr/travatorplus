@@ -19,6 +19,15 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   webpack(config) {
+    // @travator/shared's source uses NodeNext-style internal imports
+    // ("./common.js" resolving to common.ts) — correct for tsc/tsx, but
+    // webpack has no such alias by default and fails to resolve them. This is
+    // the first import of the package from apps/web (lib/chat-stream.ts), so
+    // the gap was latent until now.
+    config.resolve.extensionAlias = {
+      ".js": [".ts", ".tsx", ".js"],
+    };
+
     const fileLoaderRule = config.module.rules.find(
       (rule) =>
         typeof rule === "object" &&

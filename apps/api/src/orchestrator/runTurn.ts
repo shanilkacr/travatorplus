@@ -2,7 +2,7 @@ import type { StreamEvent } from "@travator/shared";
 import { db, schema } from "../db/client.js";
 import { eq } from "drizzle-orm";
 import { resolveModel } from "../providers/registry.js";
-import { SYSTEM_PROMPT } from "./systemPrompt.js";
+import { buildSystemPrompt } from "./systemPrompt.js";
 import { loadMessageRows, toCanonicalMessages, insertMessage } from "./history.js";
 import type { SSEWriter } from "../lib/sse.js";
 
@@ -47,12 +47,20 @@ export async function runTurn(params: {
   const rows = await loadMessageRows(conversationId);
   const messages = toCanonicalMessages(rows);
 
+  // Milestone 3 scope: text-only, no tools wired up yet — that's milestone 4's
+  // agent loop. The system prompt must not instruct tool use the model can't
+  // actually perform: some providers (observed on Gemini) take a "use this
+  // tool" instruction literally and attempt a function call even with no
+  // matching tool schema, which the API then rejects outright with no text at
+  // all (MALFORMED_FUNCTION_CALL) rather than degrading gracefully.
+  const tools: never[] = [];
+
   let fullText = "";
   try {
     for await (const ev of provider.stream({
-      system: SYSTEM_PROMPT,
+      system: buildSystemPrompt(tools.length > 0),
       messages,
-      tools: [],
+      tools,
       maxTokens: 1024,
       model,
     })) {
