@@ -134,6 +134,11 @@ const config: Config = {
           "50%, 95%": { opacity: "0" },
           "100%": { opacity: "1" },
         },
+        /* Typing indicator dot. */
+        typing: {
+          "0%, 60%, 100%": { opacity: "0.25", transform: "translateY(0)" },
+          "30%": { opacity: "1", transform: "translateY(-2px)" },
+        },
       },
       animation: {
         "fade-up": "fade-up 300ms cubic-bezier(0.22, 1, 0.36, 1) both",
@@ -142,6 +147,7 @@ const config: Config = {
         "chip-in": "chip-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both",
         "chip-out": "chip-out 160ms cubic-bezier(0.22, 1, 0.36, 1) both",
         caret: "caret 1.1s steps(1) infinite",
+        typing: "typing 1.3s ease-in-out infinite",
       },
     },
   },

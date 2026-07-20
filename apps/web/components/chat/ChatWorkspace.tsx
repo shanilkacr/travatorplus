@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ChevronLeft,
   Compass,
@@ -27,6 +27,13 @@ import {
 } from "@/components/chat/MobilePlanCard";
 import { TravelPlanner } from "@/components/chat/TravelPlanner";
 import { AssistantMessage } from "@/components/chat/AssistantMessage";
+import { TypingIndicator } from "@/components/chat/TypingIndicator";
+import { ChatBookingCard } from "@/components/chat/ChatBookingCard";
+import {
+  buildFallbackSequence,
+  classifyFailure,
+  type FallbackReason,
+} from "@/lib/chat-fallback";
 import { MobileWorkspaceMenu } from "@/components/chat/MobileWorkspaceMenu";
 import {
   BuddiesPanel,
@@ -73,6 +80,8 @@ const RAIL_BTN =
   "btn !inline-grid h-12 w-12 place-items-center !rounded-[14px] !px-0 !py-0 transition-all";
 const RAIL_BTN_ACTIVE =
   "btn-primary !inline-grid h-12 w-12 place-items-center !rounded-[14px] !px-0 !py-0 transition-all";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
+
 const PROFILE_BTN =
   "btn-profile !inline-grid h-12 w-12 place-items-center !rounded-[14px] !px-0 !py-0 text-base font-medium transition-all";
 
@@ -80,6 +89,8 @@ interface Message {
   id: string;
   role: "user" | "assistant";
   text: string;
+  /** Renders the scheduling card beneath this message. */
+  showBooking?: boolean;
 }
 
 export function ChatWorkspace({
@@ -108,6 +119,15 @@ export function ChatWorkspace({
   const [leftPanelOpen, setLeftPanelOpen] = useState(false);
   const [plannerOpen, setPlannerOpen] = useState(Boolean(initialPrompt));
   const [mobilePlanLevel, setMobilePlanLevel] = useState<MobilePlanExpandLevel>("semi");
+  const [typing, setTyping] = useState(false);
+
+  // Pending fallback timers, cleared on unmount so they can't fire into a
+  // component that no longer exists.
+  const timers = useRef<number[]>([]);
+  useEffect(() => {
+    const pending = timers.current;
+    return () => pending.forEach(clearTimeout);
+  }, []);
 
   const trip = preset?.trip ?? DEMO_TRIP;
   const days = preset?.days ?? DEMO_DAYS;
@@ -115,17 +135,73 @@ export function ChatWorkspace({
 
   const Panel = openRail ? PANELS[openRail] : null;
 
-  function send(text: string) {
+  /**
+   * Plays a fallback sequence one message at a time, with the typing indicator
+   * showing in between. Timers are tracked so an unmount mid-sequence doesn't
+   * leave them firing into a dead component.
+   */
+  function playFallback(reason: FallbackReason, userText: string) {
+    const steps = buildFallbackSequence(reason, userText);
+    let elapsed = 0;
+
+    steps.forEach((step, i) => {
+      // Show the indicator for this step's think-time...
+      timers.current.push(
+        window.setTimeout(() => setTyping(true), elapsed)
+      );
+      elapsed += step.typingMs;
+
+      // ...then land the message and pause before the next one starts.
+      timers.current.push(
+        window.setTimeout(() => {
+          setTyping(false);
+          setMessages((cur) => [
+            ...cur,
+            {
+              id: `fb${Date.now()}-${i}`,
+              role: "assistant",
+              text: step.text,
+              showBooking: step.showBooking,
+            },
+          ]);
+        }, elapsed)
+      );
+      elapsed += 450;
+    });
+  }
+
+  async function send(text: string) {
     if (!text) return;
+
     setMessages((cur) => [
       ...cur,
-      { id: `u${cur.length}`, role: "user", text },
-      {
-        id: `a${cur.length + 1}`,
-        role: "assistant",
-        text: "Noted — I've updated the planner.\n\n**Changes applied** to the itinerary on the right. (The live agent loop lands in the next milestone; this is the interface it will drive.)",
-      },
+      { id: `u${cur.length}-${Date.now()}`, role: "user", text },
     ]);
+
+    setTyping(true);
+    try {
+      const res = await fetch(`${API_BASE}/v1/chat/preview`, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ message: text }),
+        signal: AbortSignal.timeout(12_000),
+      });
+
+      if (!res.ok) throw res.status;
+
+      const data = (await res.json()) as { reply?: string };
+      if (!data.reply) throw new Error("empty reply");
+
+      setTyping(false);
+      setMessages((cur) => [
+        ...cur,
+        { id: `a${cur.length}-${Date.now()}`, role: "assistant", text: data.reply! },
+      ]);
+    } catch (err) {
+      // Never surface the failure. Route the traveller to a person instead.
+      setTyping(false);
+      playFallback(classifyFailure(err), text);
+    }
   }
 
   function selectRail(key: RailKey) {
@@ -397,8 +473,15 @@ export function ChatWorkspace({
                       </button>
                     ))}
                   </div>
+                  {m.showBooking && <ChatBookingCard />}
                 </article>
               )
+            )}
+
+            {typing && (
+              <div className="animate-fade-up">
+                <TypingIndicator />
+              </div>
             )}
           </div>
         </div>
