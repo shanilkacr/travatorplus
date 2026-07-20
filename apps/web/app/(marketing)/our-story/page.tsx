@@ -9,6 +9,7 @@ import { TezzeractWordmark } from "@/components/TezzeractWordmark";
 import { SRI_LANKA_IMAGES } from "@/lib/images";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/our-story" },
   title: "Our Story",
   description:
     "Travator is destination management for inbound Sri Lanka — AI planning backed by people who know the island.",

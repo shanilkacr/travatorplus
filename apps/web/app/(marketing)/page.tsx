@@ -20,6 +20,7 @@ import { SamplePlansMarquee } from "@/components/SamplePlansMarquee";
 import { SriLankaImage } from "@/components/SriLankaImage";
 import { SAMPLE_PLANS } from "@/lib/sample-plans";
 import { SRI_LANKA_IMAGES } from "@/lib/images";
+import { FaqLd } from "@/components/StructuredData";
 
 /* ── Content (all original Travator copy) ─────────────────── */
 
@@ -214,6 +215,7 @@ const FAQS = [
 export default function HomePage() {
   return (
     <>
+      <FaqLd items={FAQS} />
       {/* Hero — inset card with a 10px margin on all four sides.
           The header block is its 20px top pad plus the 3.5rem nav (note rem is
           14px here, so that's 49px, not 56px). Pulling the section up by

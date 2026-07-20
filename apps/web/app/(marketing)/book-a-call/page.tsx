@@ -5,6 +5,7 @@ import { FadeIn } from "@/components/FadeIn";
 import { GlassPanel } from "@/components/glass/GlassPanel";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/book-a-call" },
   title: "Book a call",
   description:
     "Talk to Shanilka, founder of Travator. Book a call or send us what you're planning and we'll be in touch.",

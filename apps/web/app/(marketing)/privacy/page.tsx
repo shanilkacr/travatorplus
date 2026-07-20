@@ -5,6 +5,7 @@ import { GlassPanel } from "@/components/glass/GlassPanel";
 import { TezzeractWordmark } from "@/components/TezzeractWordmark";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/privacy" },
   title: "Privacy Policy",
   description:
     "How Travator collects, uses, stores, and protects your personal data — including your rights under GDPR and CCPA.",

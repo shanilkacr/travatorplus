@@ -5,6 +5,7 @@ import { BlogFeatured } from "@/components/blog/BlogFeatured";
 import { BlogExplorer } from "@/components/blog/BlogExplorer";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/blog" },
   title: "Blog",
   description:
     "Notes on planning a Sri Lanka trip — seasons, coasts, driving times, and the small things that make a trip.",

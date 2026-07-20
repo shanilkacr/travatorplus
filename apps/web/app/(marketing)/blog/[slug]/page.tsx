@@ -13,7 +13,9 @@ import { ArticleToc } from "@/components/blog/ArticleToc";
 import { BlogPostCard, formatPostDate } from "@/components/blog/BlogPostCard";
 import { BookingCta } from "@/components/BookingCta";
 import { SriLankaImage } from "@/components/SriLankaImage";
+import { ArticleLd, BreadcrumbLd } from "@/components/StructuredData";
 import { getBlogImage } from "@/lib/images";
+import { absoluteUrl, OG_IMAGE } from "@/lib/site";
 
 export const dynamicParams = false;
 
@@ -28,7 +30,28 @@ export function generateMetadata({
 }): Metadata {
   try {
     const meta = getPostMeta(params.slug);
-    return { title: meta.title, description: meta.excerpt };
+    const path = `/blog/${meta.slug}`;
+    return {
+      title: meta.title,
+      description: meta.excerpt,
+      alternates: { canonical: path },
+      openGraph: {
+        type: "article",
+        title: meta.title,
+        description: meta.excerpt,
+        url: absoluteUrl(path),
+        publishedTime: meta.date,
+        authors: [meta.author],
+        section: meta.category,
+        images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: meta.title }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: meta.title,
+        description: meta.excerpt,
+        images: [OG_IMAGE],
+      },
+    };
   } catch {
     return {};
   }
@@ -48,6 +71,14 @@ export default async function BlogPostPage({
 
   return (
     <div className="container-blog pb-28 pt-10 md:pt-14">
+      <ArticleLd post={meta} />
+      <BreadcrumbLd
+        items={[
+          { name: "Home", path: "/" },
+          { name: "Blog", path: "/blog" },
+          { name: meta.title, path: `/blog/${meta.slug}` },
+        ]}
+      />
       {/*
         Three tracks on desktop: contents rail, the article, and the booking
         panel. Both rails are sticky; only the article scrolls past them.
