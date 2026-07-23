@@ -46,6 +46,7 @@ import {
 } from "@/components/chat/RailPanels";
 import { getSamplePlanPreset } from "@/lib/sample-plans";
 import { DEMO_DAYS, DEMO_LINE_ITEMS, DEMO_TRIP } from "@/lib/demo-trip";
+import { getApiBase } from "@/lib/api-base";
 import { cn } from "@/lib/utils";
 
 type RailKey = "profile" | "buddies" | "explore" | "map" | "budget" | "settings";
@@ -70,7 +71,7 @@ const RAIL_BTN =
   "btn !inline-grid h-12 w-12 place-items-center !rounded-[14px] !px-0 !py-0 transition-all";
 const RAIL_BTN_ACTIVE =
   "btn-primary !inline-grid h-12 w-12 place-items-center !rounded-[14px] !px-0 !py-0 transition-all";
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8787";
+const API_BASE = getApiBase();
 
 const PROFILE_BTN =
   "btn-profile !inline-grid h-12 w-12 place-items-center !rounded-[14px] !px-0 !py-0 text-base font-medium transition-all";

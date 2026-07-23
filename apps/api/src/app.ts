@@ -1,12 +1,12 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { env } from "./config/env.js";
 import { withOptionalAuth } from "./auth/middleware.js";
 import { withRequestContext, type AppVars } from "./middleware/request-context.js";
 import { authRoutes } from "./routes/auth.js";
 import { conversationRoutes } from "./routes/conversations.js";
 import { contactRoutes } from "./routes/contact.js";
 import type { WorkerBindings } from "./types/bindings.js";
+import { resolveCorsOrigin } from "./lib/cors.js";
 
 /**
  * Shared Hono app — used by Node (server.ts) and Cloudflare Workers (index.ts).
@@ -19,7 +19,7 @@ export function createApp() {
   app.use(
     "*",
     cors({
-      origin: () => env().WEB_ORIGIN,
+      origin: (origin) => resolveCorsOrigin(origin),
       allowMethods: ["GET", "POST", "OPTIONS"],
       allowHeaders: ["Content-Type", "Authorization"],
     })
@@ -33,6 +33,12 @@ export function createApp() {
   app.route("/v1/auth", authRoutes);
   app.route("/v1/conversations", conversationRoutes);
   app.route("/v1/contact", contactRoutes);
+
+  app.onError((err, c) => {
+    console.error("✗ Unhandled error:", err);
+    const message = err instanceof Error ? err.message : "Internal Server Error";
+    return c.json({ error: "internal_error", message }, 500);
+  });
 
   return app;
 }
