@@ -17,11 +17,16 @@ export interface DbBundle {
 export function createDb(connectionString: string, max = 5): DbBundle {
   const isLocal =
     connectionString.includes("localhost") || connectionString.includes("127.0.0.1");
+  const isHyperdrive = connectionString.includes("hyperdrive");
+  // Workers: max 1 connection — higher values burn subrequests.
+  const poolMax = isLocal ? max : 1;
   const sqlClient = postgres(connectionString, {
-    max,
+    max: poolMax,
     prepare: false,
-    // Supabase and other hosted Postgres require TLS.
-    ...(isLocal ? {} : { ssl: "require" }),
+    connect_timeout: 10,
+    idle_timeout: 20,
+    // Hosted Postgres needs TLS; Hyperdrive and localhost do not.
+    ...(!isLocal && !isHyperdrive ? { ssl: "require" } : {}),
   });
   const db = drizzle(sqlClient, { schema });
   return { db, sqlClient };

@@ -24,17 +24,10 @@ USD_TO_LKR = "305"
 # Set WEB_ORIGIN to your Vercel frontend URL, e.g. https://travator.com
 WEB_ORIGIN = "http://localhost:3000"
 
-# Secrets (set via `wrangler secret put <NAME>` — do NOT commit):
-#   DATABASE_URL       — Supabase pooler URL (port 6543, ?pgbouncer=true)
-#   ANTHROPIC_API_KEY  — or OPENAI_API_KEY / GOOGLE_API_KEY
-#   JWT_SECRET         — 32+ random chars
-#
-# Optional Hyperdrive (recommended for production Postgres pooling):
-#   1. Create Hyperdrive config pointing at your Supabase direct connection
-#   2. Uncomment and set the id below
-# [[hyperdrive]]
-# binding = "HYPERDRIVE"
-# id = "<your-hyperdrive-config-id>"
+# Hyperdrive → Supabase (fixes "Too many subrequests" on Workers free tier)
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "55b8aadff008412fa8c5b4a3ea56e35a"
 
 [observability]
 enabled = true
