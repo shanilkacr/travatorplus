@@ -1,13 +1,14 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
-import { env } from "../config/env.js";
+import { env, loadEnvFromProcess } from "../config/env.js";
 
 /**
  * Runs Drizzle migrations. Ensures the pgvector extension exists first (the
  * generated migration references vector(1024) columns).
  */
 async function main() {
+  loadEnvFromProcess();
   const url = env().DATABASE_URL;
   const client = postgres(url, { max: 1 });
 

@@ -15,7 +15,8 @@
     "check:colors": "node scripts/check-colors.mjs",
     "db:generate": "pnpm --filter @travator/api db:generate",
     "db:migrate": "pnpm --filter @travator/api db:migrate",
-    "db:seed": "pnpm --filter @travator/api db:seed"
+    "db:seed": "pnpm --filter @travator/api db:seed",
+    "deploy:api": "pnpm --filter @travator/api deploy:worker"
   },
   "devDependencies": {
     "turbo": "^2.3.3",

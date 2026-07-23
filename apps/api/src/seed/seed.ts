@@ -1,4 +1,5 @@
-import { db, sqlClient } from "../db/client.js";
+import { createDb } from "../db/client.js";
+import { loadEnvFromProcess, env } from "../config/env.js";
 import {
   hotels as hotelsTable,
   hotelRates,
@@ -15,6 +16,8 @@ import { hotels, drivers, knowledgeChunks } from "./data.js";
  * EmbeddingProvider (mock by default — deterministic, no network).
  */
 async function main() {
+  loadEnvFromProcess();
+  const { db, sqlClient } = createDb(env().DATABASE_URL, 1);
   const embedder = getEmbeddingProvider();
   console.log(`→ Seeding with embeddings provider: ${embedder.id} (dim ${embedder.dim})`);
 

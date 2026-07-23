@@ -1,6 +1,7 @@
 import { eq, asc } from "drizzle-orm";
 import type { CanonicalMessage, MessageDTO } from "@travator/shared";
-import { db, schema } from "../db/client.js";
+import type { DB } from "../db/client.js";
+import { schema } from "../db/client.js";
 
 /**
  * Loads a conversation's persisted messages and converts them into canonical
@@ -8,7 +9,7 @@ import { db, schema } from "../db/client.js";
  * clients. Content blocks are stored as `MessageDTO["content"]` in `messages.content`.
  */
 
-export async function loadMessageRows(conversationId: string) {
+export async function loadMessageRows(db: DB, conversationId: string) {
   return db
     .select()
     .from(schema.messages)
@@ -60,11 +61,14 @@ export function toCanonicalMessages(
   return out;
 }
 
-export async function insertMessage(params: {
-  conversationId: string;
-  role: (typeof schema.messages.$inferInsert)["role"];
-  content: MessageDTO["content"];
-}) {
+export async function insertMessage(
+  db: DB,
+  params: {
+    conversationId: string;
+    role: (typeof schema.messages.$inferInsert)["role"];
+    content: MessageDTO["content"];
+  }
+) {
   const [row] = await db
     .insert(schema.messages)
     .values({

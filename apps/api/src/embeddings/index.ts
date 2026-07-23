@@ -1,5 +1,5 @@
-import { createHash } from "node:crypto";
 import { env } from "../config/env.js";
+import { sha256Bytes } from "../lib/crypto.js";
 
 /**
  * EmbeddingProvider abstraction. `mock` produces deterministic, normalized
@@ -21,23 +21,29 @@ class MockEmbeddingProvider implements EmbeddingProvider {
     return DIM();
   }
   async embed(texts: string[]): Promise<number[][]> {
-    return texts.map((t) => hashVector(t, this.dim));
+    const out: number[][] = [];
+    for (const t of texts) {
+      out.push(await hashVector(t, this.dim));
+    }
+    return out;
   }
 }
 
-function hashVector(text: string, dim: number): number[] {
+async function hashVector(text: string, dim: number): Promise<number[]> {
   const vec = new Array<number>(dim).fill(0);
   // Expand a token stream into the vector via salted hashes for coverage.
   const tokens = text.toLowerCase().split(/\W+/).filter(Boolean);
   const source = tokens.length ? tokens : [text];
   for (const tok of source) {
     for (let salt = 0; salt < 4; salt++) {
-      const h = createHash("sha256").update(`${salt}:${tok}`).digest();
+      const h = await sha256Bytes(`${salt}:${tok}`);
       for (let i = 0; i + 4 <= h.length; i += 4) {
-        const idx = h.readUInt32BE(i) % dim;
+        const idx =
+          ((h[i]! << 24) | (h[i + 1]! << 16) | (h[i + 2]! << 8) | h[i + 3]!) >>> 0;
+        const idxMod = idx % dim;
         const sign = (h[i]! & 1) === 1 ? 1 : -1;
         const magnitude = 1 + (h[(i + 1) % h.length]! % 5);
-        vec[idx]! += sign * magnitude;
+        vec[idxMod]! += sign * magnitude;
       }
     }
   }

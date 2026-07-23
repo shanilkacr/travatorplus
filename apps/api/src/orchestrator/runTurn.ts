@@ -1,5 +1,6 @@
 import type { StreamEvent } from "@travator/shared";
-import { db, schema } from "../db/client.js";
+import type { DB } from "../db/client.js";
+import { schema } from "../db/client.js";
 import { eq } from "drizzle-orm";
 import { resolveModel } from "../providers/registry.js";
 import { buildSystemPrompt } from "./systemPrompt.js";
@@ -14,11 +15,12 @@ import type { SSEWriter } from "../lib/sse.js";
  * ready; `tools: []` here becomes the real tool set in the next milestone.
  */
 export async function runTurn(params: {
+  db: DB;
   conversationId: string;
   writer: SSEWriter;
   modelOverride?: { provider?: string | null; model?: string | null };
 }): Promise<void> {
-  const { conversationId, writer } = params;
+  const { db, conversationId, writer } = params;
 
   const [conversation] = await db
     .select()
@@ -44,7 +46,7 @@ export async function runTurn(params: {
     model: params.modelOverride?.model ?? conversation.modelOverride,
   });
 
-  const rows = await loadMessageRows(conversationId);
+  const rows = await loadMessageRows(db, conversationId);
   const messages = toCanonicalMessages(rows);
 
   // Milestone 3 scope: text-only, no tools wired up yet — that's milestone 4's
@@ -80,7 +82,7 @@ export async function runTurn(params: {
     return;
   }
 
-  const assistantRow = await insertMessage({
+  const assistantRow = await insertMessage(db, {
     conversationId,
     role: "assistant",
     content: [{ kind: "text", text: fullText }],

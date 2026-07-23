@@ -1,6 +1,8 @@
+import { AsyncLocalStorage } from "node:async_hooks";
 import { z } from "zod";
+import type { WorkerBindings } from "../types/bindings.js";
 
-/** Validated environment. Fails loudly at startup if misconfigured. */
+/** Validated environment. Fails loudly when parsed if misconfigured. */
 const EnvSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
 
@@ -36,14 +38,54 @@ const EnvSchema = z.object({
 
 export type Env = z.infer<typeof EnvSchema>;
 
-let cached: Env | null = null;
-export function env(): Env {
-  if (cached) return cached;
-  const parsed = EnvSchema.safeParse(process.env);
+const requestEnv = new AsyncLocalStorage<Env>();
+let processEnvCache: Env | null = null;
+
+export function parseEnv(source: Record<string, unknown>): Env {
+  const parsed = EnvSchema.safeParse(source);
   if (!parsed.success) {
     console.error("✗ Invalid environment:\n", parsed.error.flatten().fieldErrors);
     throw new Error("Invalid environment configuration");
   }
-  cached = parsed.data;
-  return cached;
+  return parsed.data;
+}
+
+/** Map Cloudflare Worker bindings into the shared env schema. */
+export function parseEnvFromBindings(bindings: WorkerBindings): Env {
+  return parseEnv({
+    NODE_ENV: bindings.NODE_ENV,
+    LLM_PROVIDER: bindings.LLM_PROVIDER,
+    LLM_MODEL: bindings.LLM_MODEL,
+    TASK_LLM_PROVIDER: bindings.TASK_LLM_PROVIDER,
+    TASK_LLM_MODEL: bindings.TASK_LLM_MODEL,
+    ANTHROPIC_API_KEY: bindings.ANTHROPIC_API_KEY,
+    OPENAI_API_KEY: bindings.OPENAI_API_KEY,
+    GOOGLE_API_KEY: bindings.GOOGLE_API_KEY,
+    EMBEDDINGS_PROVIDER: bindings.EMBEDDINGS_PROVIDER,
+    EMBEDDINGS_MODEL: bindings.EMBEDDINGS_MODEL,
+    VOYAGE_API_KEY: bindings.VOYAGE_API_KEY,
+    EMBEDDINGS_DIM: bindings.EMBEDDINGS_DIM,
+    DATABASE_URL: bindings.DATABASE_URL,
+    JWT_SECRET: bindings.JWT_SECRET,
+    JWT_ISSUER: bindings.JWT_ISSUER,
+    OTP_TTL_SECONDS: bindings.OTP_TTL_SECONDS,
+    WEB_ORIGIN: bindings.WEB_ORIGIN,
+    API_PUBLIC_URL: bindings.API_PUBLIC_URL,
+    USD_TO_LKR: bindings.USD_TO_LKR,
+  });
+}
+
+/** Load and cache env from process.env (Node scripts + local dev server). */
+export function loadEnvFromProcess(): Env {
+  processEnvCache = parseEnv(process.env as Record<string, unknown>);
+  return processEnvCache;
+}
+
+/** Current env — request-scoped on Workers, process cache on Node. */
+export function env(): Env {
+  return requestEnv.getStore() ?? processEnvCache ?? loadEnvFromProcess();
+}
+
+export function runWithEnv<T>(config: Env, fn: () => T): T {
+  return requestEnv.run(config, fn);
 }

@@ -7,13 +7,14 @@ import {
   InteractionRequest,
   type ConversationDTO,
 } from "@travator/shared";
-import { db, schema } from "../db/client.js";
+import { schema } from "../db/client.js";
 import { insertMessage, loadMessageRows, toMessageDTO } from "../orchestrator/history.js";
 import { runTurn } from "../orchestrator/runTurn.js";
 import { makeSSEWriter, SSE_HEADERS } from "../lib/sse.js";
-import type { AuthVars } from "../auth/middleware.js";
+import { getContextDb } from "../middleware/request-context.js";
+import type { AppVars } from "../middleware/request-context.js";
 
-export const conversationRoutes = new Hono<{ Variables: AuthVars }>();
+export const conversationRoutes = new Hono<{ Variables: AppVars }>();
 
 function toConversationDTO(row: typeof schema.conversations.$inferSelect): ConversationDTO {
   return {
@@ -30,6 +31,7 @@ conversationRoutes.post("/", async (c) => {
   const body = CreateConversationBody.safeParse(await c.req.json().catch(() => ({})));
   if (!body.success) return c.json({ error: "invalid_body", issues: body.error.issues }, 400);
 
+  const db = getContextDb(c);
   const user = c.get("user");
   const [conversation] = await db
     .insert(schema.conversations)
@@ -40,7 +42,7 @@ conversationRoutes.post("/", async (c) => {
     .returning();
 
   if (body.data.firstMessage) {
-    await insertMessage({
+    await insertMessage(db, {
       conversationId: conversation!.id,
       role: "user",
       content: [{ kind: "text", text: body.data.firstMessage }],
@@ -52,6 +54,7 @@ conversationRoutes.post("/", async (c) => {
 
 /** GET /v1/conversations — list conversations for the authenticated user. */
 conversationRoutes.get("/", async (c) => {
+  const db = getContextDb(c);
   const user = c.get("user");
   if (!user) return c.json({ conversations: [] });
 
@@ -67,7 +70,7 @@ conversationRoutes.get("/", async (c) => {
 /** GET /v1/conversations/:id/messages — message history (for reload/hydration). */
 conversationRoutes.get("/:id/messages", async (c) => {
   const id = c.req.param("id");
-  const rows = await loadMessageRows(id);
+  const rows = await loadMessageRows(getContextDb(c), id);
   return c.json({ messages: rows.map(toMessageDTO) });
 });
 
@@ -76,6 +79,7 @@ conversationRoutes.get("/:id/messages", async (c) => {
  * the assistant turn as SSE (StreamEvent v1 frames).
  */
 conversationRoutes.post("/:id/messages", async (c) => {
+  const db = getContextDb(c);
   const id = c.req.param("id");
   const body = PostMessageBody.safeParse(await c.req.json());
   if (!body.success) return c.json({ error: "invalid_body", issues: body.error.issues }, 400);
@@ -87,7 +91,7 @@ conversationRoutes.post("/:id/messages", async (c) => {
     .limit(1);
   if (!conversation) return c.json({ error: "not_found" }, 404);
 
-  await insertMessage({
+  await insertMessage(db, {
     conversationId: id,
     role: "user",
     content: [{ kind: "text", text: body.data.text }],
@@ -105,6 +109,7 @@ conversationRoutes.post("/:id/messages", async (c) => {
       },
     });
     await runTurn({
+      db,
       conversationId: id,
       writer,
       modelOverride: { provider: body.data.provider, model: body.data.model },
@@ -118,6 +123,7 @@ conversationRoutes.post("/:id/messages", async (c) => {
  * never diverge; the agent's next turn sees it in history.
  */
 conversationRoutes.post("/:id/interactions", async (c) => {
+  const db = getContextDb(c);
   const id = c.req.param("id");
   const body = InteractionRequest.safeParse(await c.req.json());
   if (!body.success) return c.json({ error: "invalid_body", issues: body.error.issues }, 400);
@@ -129,7 +135,7 @@ conversationRoutes.post("/:id/interactions", async (c) => {
     payload: body.data.payload,
   });
 
-  await insertMessage({
+  await insertMessage(db, {
     conversationId: id,
     role: "user",
     content: [
@@ -147,6 +153,7 @@ conversationRoutes.post("/:id/interactions", async (c) => {
 
 /** POST /v1/conversations/:id/mode — switch ai/human (used by ops in milestone 8). */
 conversationRoutes.post("/:id/mode", async (c) => {
+  const db = getContextDb(c);
   const id = c.req.param("id");
   const body = await c.req.json().catch(() => ({}));
   const mode = body?.mode === "human" ? "human" : "ai";
