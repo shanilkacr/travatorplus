@@ -11,7 +11,10 @@ import { schema } from "../db/client.js";
 import { insertMessage, loadMessageRows, toMessageDTO } from "../orchestrator/history.js";
 import { runTurn } from "../orchestrator/runTurn.js";
 import { makeSSEWriter, SSE_HEADERS } from "../lib/sse.js";
-import { getContextDb } from "../middleware/request-context.js";
+import {
+  getContextDb,
+  releaseContextSql,
+} from "../middleware/request-context.js";
 import type { AppVars } from "../middleware/request-context.js";
 
 export const conversationRoutes = new Hono<{ Variables: AppVars }>();
@@ -102,18 +105,31 @@ conversationRoutes.post("/:id/messages", async (c) => {
   c.header("Connection", SSE_HEADERS.Connection);
   c.header("X-Accel-Buffering", SSE_HEADERS["X-Accel-Buffering"]);
 
+  c.set("holdDbOpen", true);
+
   return streamSSE(c, async (stream) => {
     const writer = makeSSEWriter({
       write: async (chunk) => {
         await stream.write(chunk);
       },
     });
-    await runTurn({
-      db,
-      conversationId: id,
-      writer,
-      modelOverride: { provider: body.data.provider, model: body.data.model },
-    });
+    try {
+      await runTurn({
+        db,
+        conversationId: id,
+        writer,
+        modelOverride: { provider: body.data.provider, model: body.data.model },
+      });
+    } catch (err) {
+      console.error("✗ stream turn failed:", err);
+      await writer.send({
+        type: "error",
+        code: "internal_error",
+        message: err instanceof Error ? err.message : "Stream failed",
+      });
+    } finally {
+      releaseContextSql(c);
+    }
   });
 });
 
