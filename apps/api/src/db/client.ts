@@ -32,13 +32,13 @@ export function createDb(connectionString: string, max = 5): DbBundle {
   return { db, sqlClient };
 }
 
-const isolateCache = new Map<string, DbBundle>();
+const nodeCache = new Map<string, DbBundle>();
 
-/** Reuse one client bundle per connection string within a Worker isolate or Node process. */
+/** Reuse one client bundle per connection string in long-lived Node processes only. */
 export function getDb(connectionString: string): DbBundle {
-  const cached = isolateCache.get(connectionString);
+  const cached = nodeCache.get(connectionString);
   if (cached) return cached;
   const bundle = createDb(connectionString);
-  isolateCache.set(connectionString, bundle);
+  nodeCache.set(connectionString, bundle);
   return bundle;
 }
