@@ -13,9 +13,9 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 NODE_ENV = "production"
 LLM_PROVIDER = "google"
-LLM_MODEL = "gemini-2.0-flash"
+LLM_MODEL = "gemini-3.5-flash"
 TASK_LLM_PROVIDER = "google"
-TASK_LLM_MODEL = "gemini-2.0-flash"
+TASK_LLM_MODEL = "gemini-3.1-flash-lite"
 EMBEDDINGS_PROVIDER = "mock"
 EMBEDDINGS_DIM = "1024"
 JWT_ISSUER = "travator"
