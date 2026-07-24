@@ -12,17 +12,16 @@ compatibility_flags = ["nodejs_compat"]
 
 [vars]
 NODE_ENV = "production"
-LLM_PROVIDER = "anthropic"
-LLM_MODEL = "claude-sonnet-5"
-TASK_LLM_PROVIDER = "anthropic"
-TASK_LLM_MODEL = "claude-haiku-4-5-20251001"
+LLM_PROVIDER = "google"
+LLM_MODEL = "gemini-2.0-flash"
+TASK_LLM_PROVIDER = "google"
+TASK_LLM_MODEL = "gemini-2.0-flash"
 EMBEDDINGS_PROVIDER = "mock"
 EMBEDDINGS_DIM = "1024"
 JWT_ISSUER = "travator"
 OTP_TTL_SECONDS = "600"
 USD_TO_LKR = "305"
-# Set WEB_ORIGIN to your Vercel frontend URL, e.g. https://travator.com
-WEB_ORIGIN = "http://localhost:3000"
+WEB_ORIGIN = "https://www.travatorplus.com"
 
 # Hyperdrive → Supabase (fixes "Too many subrequests" on Workers free tier)
 [[hyperdrive]]
